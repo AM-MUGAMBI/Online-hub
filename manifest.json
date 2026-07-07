@@ -1,13 +1,21 @@
 {
-  "name": "Online-hub",
-  "short_name": "JIL Radio",
-  "description": "Live radio, and video broadcasts from Jesus is LORD Radio and the Ministry of Repentance and Holiness.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
   "background_color": "#0d0e1a",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Online-hub",
+  "orientation": "any",
+  "scope": "./",
+  "short_name": "JIL Radio",
+  "start_url": "./index.html",
   "theme_color": "#0d0e1a",
-  "orientation": "portrait",
+  "id": "43099406",
+  "categories": [
+    "entertainment",
+    "multimedia",
+    "music",
+    "social"
+  ],
+  "lang": "en",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
