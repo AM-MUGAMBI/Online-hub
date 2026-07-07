@@ -1,0 +1,16 @@
+{
+  "name": "Jesus is LORD Radio",
+  "short_name": "JIL Radio",
+  "description": "Live radio, and video broadcasts from Jesus is LORD Radio and the Ministry of Repentance and Holiness.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d0e1a",
+  "theme_color": "#0d0e1a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
