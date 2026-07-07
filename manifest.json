@@ -1,37 +1,44 @@
 {
-  "background_color": "#0d0e1a",
-  "dir": "ltr",
-  "display": "standalone",
   "name": "Online-hub",
-  "orientation": "any",
-  "scope": "./",
-  "short_name": "JIL Radio",
+  "short_name": "Online-hub",
+  "description": "Listen live to Jesus is LORD Radio, and watch Repent and Prepare the Way and Crown TV — broadcasting the Word from Nakuru, Kenya, anytime, anywhere.",
   "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d0e1a",
   "theme_color": "#0d0e1a",
-  "id": "43099406",
-  "categories": [
-    "entertainment",
-    "multimedia",
-    "music",
-    "social"
-  ],
   "lang": "en",
+  "dir": "ltr",
+  "id": "43099406",
+  "categories": ["entertainment", "multimedia", "music", "social"],
+  "prefer_related_applications": false,
   "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "name": "Jesus is LORD Radio",
+      "short_name": "Radio",
+      "description": "Jump straight to the live radio player",
+      "url": "./index.html#radio",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "name": "Repent and Prepare the Way",
+      "short_name": "RPTW",
+      "description": "Watch the latest from Repent and Prepare the Way",
+      "url": "./index.html#rptw",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "src": "icons/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "name": "Crown TV",
+      "short_name": "Crown TV",
+      "description": "Watch the latest from Crown TV",
+      "url": "./index.html#crowntv",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
