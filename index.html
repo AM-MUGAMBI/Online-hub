@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jesus is LORD Radio — Broadcasting Live</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0e1a">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -383,7 +387,7 @@
       </div>
       <div class="channel-links">
         <a href="https://www.youtube.com/@CrownTvkeOfficial/live" target="_blank" rel="noopener">Watch live on YouTube ↗</a>
-        <a href="https://www.youtube.com/@CrownTvkeOfficial" target="_blank" rel="noopener">Visit channel ↗</a>
+        <a href="https://crowntv.co.ke/" target="_blank" rel="noopener">Visit website ↗</a>
       </div>
     </div>
 
@@ -569,6 +573,13 @@ async function refreshChannel(channelKey, frameEl, badgeEl){
     const res = await fetch(`${API_BASE}/api/channel-status?channel=${channelKey}`);
     const data = await res.json();
 
+    if(data.note){
+      console.log(`[${channelKey}] diagnostic:`, data.note);
+      badgeEl.title = data.note;
+    } else {
+      badgeEl.removeAttribute('title');
+    }
+
     if(data.videoId && data.videoId !== lastVideoId[channelKey]){
       frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1`;
       lastVideoId[channelKey] = data.videoId;
@@ -585,6 +596,7 @@ async function refreshChannel(channelKey, frameEl, badgeEl){
       badgeEl.classList.remove('live');
     }
   }catch(e){
+    console.log(`[${channelKey}] fetch failed:`, e.message);
     badgeEl.textContent = 'Status unavailable';
     badgeEl.classList.remove('live');
   }
@@ -598,6 +610,13 @@ setInterval(()=>{
   refreshChannel('rptw',  document.getElementById('rptwFrame'),  document.getElementById('rptwBadge'));
   refreshChannel('crown', document.getElementById('crownFrame'), document.getElementById('crownBadge'));
 }, 60 * 1000);
+
+/* ============ PWA: register service worker (required for installability) ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{ /* non-fatal — site still works normally */ });
+  });
+}
 </script>
 
 </body>
