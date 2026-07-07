@@ -1,6 +1,6 @@
 {
-  "name": "Jesus is LORD Radio",
-  "short_name": "JIL Radio",
+  "name": "radio-hub.netlify",
+  "short_name": "radio-hub.netlify",
   "description": "Live radio, and video broadcasts from Jesus is LORD Radio and the Ministry of Repentance and Holiness.",
   "start_url": "./index.html",
   "scope": "./",
