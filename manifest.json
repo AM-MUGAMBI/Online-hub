@@ -1,10 +1,14 @@
 {
   "name": "Online-hub",
-  "short_name": "Online-hub",
+  "short_name": "JIL Radio",
   "description": "Listen live to Jesus is LORD Radio, and watch Repent and Prepare the Way and Crown TV — broadcasting the Word from Nakuru, Kenya, anytime, anywhere.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "orientation": "any",
   "background_color": "#0d0e1a",
   "theme_color": "#0d0e1a",
@@ -17,6 +21,36 @@
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
     { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot-radio-dark.png",
+      "sizes": "1874x534",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Live radio player, night theme"
+    },
+    {
+      "src": "screenshots/screenshot-channels-dark.png",
+      "sizes": "1858x659",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Repent and Prepare the Way and Crown TV, night theme"
+    },
+    {
+      "src": "screenshots/screenshot-channels-light.png",
+      "sizes": "1802x691",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Repent and Prepare the Way and Crown TV, day theme"
+    },
+    {
+      "src": "screenshots/screenshot-radio-light.png",
+      "sizes": "1756x493",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Live radio player, day theme"
+    }
   ],
   "shortcuts": [
     {
