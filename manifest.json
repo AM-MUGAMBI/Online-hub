@@ -1,6 +1,6 @@
 {
   "name": "Online-hub",
-  "short_name": "JIL Radio",
+  "short_name": "Online-hub",
   "description": "Listen live to Jesus is LORD Radio, and watch Repent and Prepare the Way and Crown TV — broadcasting the Word from Nakuru, Kenya, anytime, anywhere.",
   "start_url": "./index.html",
   "scope": "./",
