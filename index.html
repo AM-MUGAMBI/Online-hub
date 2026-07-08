@@ -452,6 +452,9 @@ audio.addEventListener('playing', ()=>{
   setStatus('live');
   reconnectDelay = 2000;
   clearTimeout(connectWatchdog);
+  // Whichever path got us here (autoplay, manual tap, or a reconnect),
+  // if we're actually playing muted, make sure the banner is visible.
+  unmuteBanner.style.display = audio.muted ? 'block' : 'none';
 });
 audio.addEventListener('waiting', ()=> setStatus('connecting'));
 audio.addEventListener('error', scheduleReconnect);
@@ -592,7 +595,7 @@ async function refreshChannel(channelKey, frameEl, badgeEl){
       badgeEl.textContent = 'Latest video';
       badgeEl.classList.remove('live');
     } else {
-      badgeEl.textContent = 'Unavailable';
+      badgeEl.textContent = 'NOT LIVE NOW';
       badgeEl.classList.remove('live');
     }
   }catch(e){

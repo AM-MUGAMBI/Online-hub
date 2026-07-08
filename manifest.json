@@ -5,7 +5,13 @@
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "minimal-ui",
+    "fullscreen",
+    "browser",
+    "window-controls-overlay",
+    "standalone"
+  ],
   "launch_handler": {
     "client_mode": "focus-existing"
   },
@@ -15,12 +21,30 @@
   "lang": "en",
   "dir": "ltr",
   "id": "43099406",
-  "categories": ["entertainment", "multimedia", "music", "social"],
+  "categories": [
+    "entertainment",
+    "multimedia",
+    "music",
+    "social"
+  ],
   "prefer_related_applications": false,
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "screenshots": [
     {
@@ -58,21 +82,39 @@
       "short_name": "Radio",
       "description": "Jump straight to the live radio player",
       "url": "./index.html#radio",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Repent and Prepare the Way",
       "short_name": "RPTW",
       "description": "Watch the latest from Repent and Prepare the Way",
       "url": "./index.html#rptw",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Crown TV",
       "short_name": "Crown TV",
       "description": "Watch the latest from Crown TV",
       "url": "./index.html#crowntv",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
