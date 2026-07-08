@@ -76,6 +76,7 @@
 
   /* ---- Header / Hero ---- */
   header{
+    position:relative;
     padding:28px 6vw 10px;
     display:flex;
     align-items:center;
@@ -117,6 +118,36 @@
     transition:transform .15s, background .25s ease;
   }
   .theme-toggle:hover{transform:scale(1.06);}
+
+  .settings-panel{
+    display:none;
+    position:absolute;
+    top:60px;
+    right:6vw;
+    width:270px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    box-shadow:0 12px 28px rgba(0,0,0,0.35);
+    z-index:50;
+  }
+  .settings-panel.open{display:block;}
+  .settings-panel h4{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--text-muted); margin-bottom:10px;
+  }
+  .settings-row{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:10px 0; font-size:13px;
+    border-bottom:1px solid var(--line);
+  }
+  .settings-row:last-child{border-bottom:none;}
+  .settings-row label{cursor:pointer;}
+  .settings-hint{color:var(--text-muted); font-size:11px;}
+  .settings-row input[type="checkbox"]{
+    accent-color:var(--gold); width:18px; height:18px; cursor:pointer; flex-shrink:0;
+  }
 
   .hero{
     padding:34px 6vw 50px;
@@ -305,8 +336,25 @@
     <a href="#rptw">Repent &amp; Prepare the Way</a>
     <a href="#crowntv">Crown TV</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle day/night mode" title="Toggle day/night mode">🌙</button>
+    <button class="theme-toggle" id="settingsToggle" aria-label="Settings" title="Settings">⚙</button>
   </nav>
 </header>
+
+<div class="settings-panel" id="settingsPanel">
+  <h4>Playback settings</h4>
+  <div class="settings-row">
+    <label for="settingAutoplay">Autoplay radio when opening</label>
+    <input type="checkbox" id="settingAutoplay">
+  </div>
+  <div class="settings-row">
+    <label for="settingAutoResume">Auto-resume after interruptions<br><span class="settings-hint">(calls, switching apps)</span></label>
+    <input type="checkbox" id="settingAutoResume">
+  </div>
+  <div class="settings-row">
+    <label for="settingRememberVolume">Remember my volume level</label>
+    <input type="checkbox" id="settingRememberVolume">
+  </div>
+</div>
 
 <section class="hero" id="radio">
   <div>
@@ -416,12 +464,58 @@ let reconnectDelay = 2000;
 let reconnectTimer = null;
 let connectWatchdog = null;
 
-audio.volume = 0.8;
+/* ============ SETTINGS: stored preferences, toggleable by the user ============ */
+function getSetting(key, defaultValue){
+  const v = localStorage.getItem(key);
+  return v === null ? defaultValue : v === 'true';
+}
+function setSetting(key, value){
+  localStorage.setItem(key, value ? 'true' : 'false');
+}
+
+const SETTING_AUTOPLAY = 'setting-autoplay-enabled';
+const SETTING_AUTORESUME = 'setting-autoresume-enabled';
+const SETTING_REMEMBER_VOLUME = 'setting-remember-volume';
+
+const settingAutoplayEl = document.getElementById('settingAutoplay');
+const settingAutoResumeEl = document.getElementById('settingAutoResume');
+const settingRememberVolumeEl = document.getElementById('settingRememberVolume');
+
+settingAutoplayEl.checked = getSetting(SETTING_AUTOPLAY, true);
+settingAutoResumeEl.checked = getSetting(SETTING_AUTORESUME, true);
+settingRememberVolumeEl.checked = getSetting(SETTING_REMEMBER_VOLUME, true);
+
+settingAutoplayEl.addEventListener('change', ()=> setSetting(SETTING_AUTOPLAY, settingAutoplayEl.checked));
+settingAutoResumeEl.addEventListener('change', ()=> setSetting(SETTING_AUTORESUME, settingAutoResumeEl.checked));
+settingRememberVolumeEl.addEventListener('change', ()=> setSetting(SETTING_REMEMBER_VOLUME, settingRememberVolumeEl.checked));
+
+const settingsToggle = document.getElementById('settingsToggle');
+const settingsPanel = document.getElementById('settingsPanel');
+settingsToggle.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  settingsPanel.classList.toggle('open');
+});
+document.addEventListener('click', (e)=>{
+  if(settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && e.target !== settingsToggle){
+    settingsPanel.classList.remove('open');
+  }
+});
+
+// Volume: restore the visitor's last level if they want that remembered.
+const rememberVolume = getSetting(SETTING_REMEMBER_VOLUME, true);
+const savedVolume = rememberVolume ? localStorage.getItem('radio-volume-level') : null;
+const initialVolume = savedVolume !== null ? Number(savedVolume) : 80;
+volumeSlider.value = initialVolume;
+audio.volume = initialVolume / 100;
+volumeIcon.textContent = initialVolume == 0 ? '🔇' : initialVolume < 50 ? '🔉' : '🔊';
 
 volumeSlider.addEventListener('input', ()=>{
   const level = Number(volumeSlider.value) / 100;
   audio.volume = level;
   volumeIcon.textContent = level === 0 ? '🔇' : level < 0.5 ? '🔉' : '🔊';
+  if(getSetting(SETTING_REMEMBER_VOLUME, true)){
+    localStorage.setItem('radio-volume-level', volumeSlider.value);
+  }
 });
 
 function setStatus(state){
@@ -478,22 +572,72 @@ function unlockSound(){
   localStorage.setItem('radio-sound-unlocked', 'true');
 }
 
+let userPaused = false;
+
 playBtn.addEventListener('click', ()=>{
   if(!userStarted){
     userStarted = true;
+    userPaused = false;
     connectStream();
   } else if(audio.muted){
     // The very first real tap while muted means "I want sound" —
     // not "pause", even though the audio was technically already playing.
     unlockSound();
-    if(audio.paused) audio.play();
+    if(audio.paused){ userPaused = false; audio.play(); }
   } else if(audio.paused){
+    userPaused = false;
     audio.play();
   } else {
+    userPaused = true;
     audio.pause();
     setStatus('paused');
   }
 });
+
+// ============ Interruptions: phone calls, switching apps, OS audio focus ============
+// If the audio stops WITHOUT the user having pressed pause themselves, that's
+// the OS taking it away (a call came in, another app grabbed audio focus,
+// etc.) rather than a deliberate choice — so if "auto-resume" is enabled,
+// try to reclaim playback once we're allowed to again, instead of leaving
+// it paused until the visitor manually presses play.
+let resumeAttemptTimer = null;
+function tryAutoResume(){
+  if(!getSetting(SETTING_AUTORESUME, true)) return;
+  if(userPaused || !userStarted) return;
+  if(!audio.paused) return;
+  clearTimeout(resumeAttemptTimer);
+  resumeAttemptTimer = setTimeout(()=>{
+    if(userPaused || !audio.paused) return;
+    audio.play().catch(()=>{ /* still blocked (e.g. call still active) — will try again */ });
+  }, 1200);
+}
+
+audio.addEventListener('pause', ()=>{
+  if(!userPaused && userStarted){
+    setStatus('reconnecting');
+    tryAutoResume();
+  }
+});
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible'){
+    tryAutoResume();
+  }
+});
+
+// ============ Media Session: lock-screen / notification controls ============
+// This is what lets Android treat the stream as legitimate ongoing media
+// (proper Now Playing controls) rather than just a browser tab, which also
+// makes the OS less eager to fully discard it in the background.
+if('mediaSession' in navigator){
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: 'Jesus is LORD Radio',
+    artist: 'Ministry of Repentance and Holiness',
+    album: 'Live Broadcast'
+  });
+  navigator.mediaSession.setActionHandler('play', ()=> playBtn.click());
+  navigator.mediaSession.setActionHandler('pause', ()=> playBtn.click());
+}
 
 // Try to start playing as soon as the page loads. Browsers reliably allow
 // autoplay when the audio starts MUTED — starting unmuted from a cold load
@@ -501,6 +645,13 @@ playBtn.addEventListener('click', ()=>{
 // already unlocked sound in a previous visit, try WITH sound first; only
 // fall back to the muted+banner flow if the browser still blocks that.
 function attemptAutoplay(){
+  if(!getSetting(SETTING_AUTOPLAY, true)){
+    statusLabel.textContent = 'TAP ▶ TO LISTEN';
+    statusLabel.classList.remove('on');
+    statusLabel.classList.add('off');
+    return;
+  }
+
   audio.src = RADIO_STREAM_URL;
   setStatus('connecting');
 
