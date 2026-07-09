@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
- <style>
+<style>
   :root{
     --bg: #000000;
     --panel: #15172a;
@@ -107,7 +107,7 @@
   nav a:hover{color:var(--gold);}
 
   .flash-highlight{
-    animation: flashHighlight 5.5s ease;
+    animation: flashHighlight 1.8s ease;
   }
   @keyframes flashHighlight{
     0%{box-shadow:0 0 0 0 rgba(201,162,39,0);}
@@ -127,6 +127,11 @@
     transition:transform .15s, background .25s ease;
   }
   .theme-toggle:hover{transform:scale(1.06);}
+
+  .next-btn{
+    width:44px; height:44px; font-size:16px;
+    background:var(--panel-raised); color:var(--gold);
+  }
 
   .settings-panel{
     display:none;
@@ -228,7 +233,7 @@
     50%{height:48px;}
   }
 
-  .play-row{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .play-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
   .volume-row{display:flex; align-items:center; gap:8px; margin-left:auto;}
   .volume-row input[type="range"]{
     width:80px; accent-color:var(--gold); cursor:pointer;
@@ -311,8 +316,42 @@
   }
   .badge.live{ color:#ff8a8a; border-color:rgba(255,138,138,0.4); background:rgba(178,58,58,0.12); }
   .badge.live .live-dot{width:6px;height:6px; display:inline-block; margin-right:5px;}
-  .channel-links{padding:0 20px 20px; display:flex; gap:16px; font-size:12px;}
+  .channel-links{padding:0 20px 20px; display:flex; gap:16px; font-size:12px; align-items:center;}
   .channel-links a{color:var(--gold); text-decoration:none;}
+  .channel-links .remove-channel{
+    margin-left:auto; color:var(--red); cursor:pointer; background:none; border:none;
+    font-size:12px; font-family:inherit; padding:0;
+  }
+
+  /* ---- Add-channel card ---- */
+  .add-channel-card{
+    background:var(--panel);
+    border:1.5px dashed var(--line);
+    border-radius:16px;
+    padding:22px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px;
+    min-height:200px;
+  }
+  .add-channel-card p{color:var(--text-muted); font-size:12.5px; margin:0; max-width:32ch;}
+  .add-channel-btn{
+    background:var(--gold); color:#141527; border:none; border-radius:8px;
+    padding:9px 18px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  .add-channel-form{display:none; width:100%; flex-direction:column; gap:8px;}
+  .add-channel-form.open{display:flex;}
+  .add-channel-form input[type="text"]{
+    width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg); color:var(--text); font-size:13px; font-family:inherit;
+  }
+  .add-channel-form .form-row{display:flex; gap:8px;}
+  .add-channel-form button{
+    flex:1; padding:9px 12px; border-radius:8px; border:none; cursor:pointer;
+    font-size:13px; font-family:inherit; font-weight:600;
+  }
+  .add-channel-form .submit-btn{background:var(--gold); color:#141527;}
+  .add-channel-form .cancel-btn{background:var(--panel-raised); color:var(--text-muted);}
+  .add-channel-error{color:var(--red); font-size:11.5px; min-height:14px;}
 
   footer{
     padding:34px 6vw 44px; border-top:1px solid var(--line);
@@ -376,7 +415,7 @@
   <div class="console">
     <div class="console-top">
       <span class="mono console-status off" id="statusLabel">CONNECTING…</span>
-      <span class="mono" style="color:var(--text-muted); font-size:11px;">105.3 &amp; 105.9 FM</span>
+      <span class="mono" id="stationFrequency" style="color:var(--text-muted); font-size:11px;">105.3 &amp; 105.9 FM</span>
     </div>
 
     <div class="waveform paused" id="waveform">
@@ -388,9 +427,10 @@
 
     <div class="play-row">
       <button class="play-btn" id="playBtn" aria-label="Play radio">▶</button>
+      <button class="play-btn next-btn" id="nextStationBtn" title="Next station" aria-label="Next station">⏭</button>
       <div class="play-meta">
-        <strong>Jesus is LORD Radio</strong>
-        Preparing the way for the return of the Messiah
+        <strong id="stationName">Jesus is LORD Radio</strong>
+        <span id="stationDescription">Preparing the way for the return of the Messiah</span>
       </div>
       <div class="volume-row">
         <span class="volume-icon" id="volumeIcon">🔊</span>
@@ -408,7 +448,11 @@
 </section>
 
 <section class="block" id="video-hub">
-  <div class="channels">
+  <div class="block-head">
+    <h2>Watch</h2>
+    <span class="tag">Live or latest, updated automatically</span>
+  </div>
+  <div class="channels" id="channelsGrid">
 
     <div class="channel-card" id="rptw">
       <div class="frame-wrap">
@@ -448,6 +492,21 @@
       </div>
     </div>
 
+    <!-- Visitor-added channels render here dynamically -->
+
+    <div class="add-channel-card" id="addChannelCard">
+      <button class="add-channel-btn" id="addChannelToggle">+ Add a channel</button>
+      <p>Add a YouTube channel you love — it'll stay saved just in your browser, only you'll see it.</p>
+      <div class="add-channel-form" id="addChannelForm">
+        <input type="text" id="addChannelInput" placeholder="@handle or channel URL">
+        <div class="add-channel-error" id="addChannelError"></div>
+        <div class="form-row">
+          <button class="submit-btn" id="addChannelSubmit">Add</button>
+          <button class="cancel-btn" id="addChannelCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -459,16 +518,41 @@
 <audio id="radioAudio" preload="none"></audio>
 
 <script>
-/* ============ RADIO: custom player, verified radio.co stream ============ */
-const RADIO_STREAM_URL = "https://s3.radio.co/s97f38db97/listen";
+/* ============ CONFIG ============ */
+const API_BASE = "https://broadcast-api-8lot.onrender.com";
+
+/* ============ RADIO: two built-in stations, switchable, never editable by visitors ============ */
+const RADIO_STATIONS = [
+  {
+    name: "Jesus is LORD Radio",
+    slogan: "Preparing the way for the return of the Messiah",
+    frequency: "105.3 & 105.9 FM",
+    stream: "https://s3.radio.co/s97f38db97/listen"
+  },
+  {
+    name: "Tabernacle Radio",
+    slogan: "Holy Tabernacle Radio — Juja Main Altar",
+    frequency: "Online stream",
+    stream: "https://stream.zeno.fm/wmn0op2lthyvv"
+  }
+];
+
+let currentStation = 0;
 
 const audio = document.getElementById('radioAudio');
 const playBtn = document.getElementById('playBtn');
+const nextStationBtn = document.getElementById('nextStationBtn');
 const waveform = document.getElementById('waveform');
 const statusLabel = document.getElementById('statusLabel');
 const volumeSlider = document.getElementById('volumeSlider');
 const volumeIcon = document.getElementById('volumeIcon');
+const stationName = document.getElementById('stationName');
+const stationDescription = document.getElementById('stationDescription');
+const stationFrequency = document.getElementById('stationFrequency');
+const unmuteBanner = document.getElementById('unmuteBanner');
+
 let userStarted = false;
+let userPaused = false;
 let reconnectDelay = 2000;
 let reconnectTimer = null;
 let connectWatchdog = null;
@@ -525,7 +609,27 @@ volumeSlider.addEventListener('input', ()=>{
   if(getSetting(SETTING_REMEMBER_VOLUME, true)){
     localStorage.setItem('radio-volume-level', volumeSlider.value);
   }
+  if(audio.muted){
+    unlockSound();
+  }
 });
+
+/* ============ Station loading / switching ============ */
+function loadStation(index){
+  currentStation = index;
+  const station = RADIO_STATIONS[index];
+  stationName.textContent = station.name;
+  stationDescription.textContent = station.slogan;
+  stationFrequency.textContent = station.frequency;
+
+  if('mediaSession' in navigator){
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: station.name,
+      artist: 'Ministry of Repentance and Holiness',
+      album: 'Live Broadcast'
+    });
+  }
+}
 
 function setStatus(state){
   statusLabel.textContent = state === 'live' ? 'ON AIR' : state === 'connecting' ? 'CONNECTING…' : state === 'paused' ? 'PAUSED' : 'RECONNECTING…';
@@ -536,13 +640,11 @@ function setStatus(state){
 }
 
 function connectStream(){
-  audio.src = RADIO_STREAM_URL;
+  loadStation(currentStation);
+  audio.src = RADIO_STATIONS[currentStation].stream;
   setStatus('connecting');
   audio.play().catch(()=>{ /* will retry on next user tap if this needs a fresh gesture */ });
 
-  // Watchdog: if we're still not actually playing after 8 seconds,
-  // treat it as stuck and force a fresh reconnect attempt automatically,
-  // instead of leaving the visitor staring at "CONNECTING" indefinitely.
   clearTimeout(connectWatchdog);
   connectWatchdog = setTimeout(()=>{
     if(userStarted && audio.paused){
@@ -555,8 +657,6 @@ audio.addEventListener('playing', ()=>{
   setStatus('live');
   reconnectDelay = 2000;
   clearTimeout(connectWatchdog);
-  // Whichever path got us here (autoplay, manual tap, or a reconnect),
-  // if we're actually playing muted, make sure the banner is visible.
   unmuteBanner.style.display = audio.muted ? 'block' : 'none';
 });
 audio.addEventListener('waiting', ()=> setStatus('connecting'));
@@ -573,15 +673,11 @@ function scheduleReconnect(){
   }, reconnectDelay);
 }
 
-const unmuteBanner = document.getElementById('unmuteBanner');
-
 function unlockSound(){
   audio.muted = false;
   unmuteBanner.style.display = 'none';
   localStorage.setItem('radio-sound-unlocked', 'true');
 }
-
-let userPaused = false;
 
 playBtn.addEventListener('click', ()=>{
   if(!userStarted){
@@ -589,8 +685,6 @@ playBtn.addEventListener('click', ()=>{
     userPaused = false;
     connectStream();
   } else if(audio.muted){
-    // The very first real tap while muted means "I want sound" —
-    // not "pause", even though the audio was technically already playing.
     unlockSound();
     if(audio.paused){ userPaused = false; audio.play(); }
   } else if(audio.paused){
@@ -603,12 +697,20 @@ playBtn.addEventListener('click', ()=>{
   }
 });
 
-// ============ Interruptions: phone calls, switching apps, OS audio focus ============
-// If the audio stops WITHOUT the user having pressed pause themselves, that's
-// the OS taking it away (a call came in, another app grabbed audio focus,
-// etc.) rather than a deliberate choice — so if "auto-resume" is enabled,
-// try to reclaim playback once we're allowed to again, instead of leaving
-// it paused until the visitor manually presses play.
+nextStationBtn.addEventListener('click', ()=>{
+  const wasPlaying = userStarted && !audio.paused;
+  const wasMuted = audio.muted;
+  currentStation = (currentStation + 1) % RADIO_STATIONS.length;
+  loadStation(currentStation);
+  audio.src = RADIO_STATIONS[currentStation].stream;
+  audio.muted = wasMuted;
+  if(wasPlaying){
+    setStatus('connecting');
+    audio.play().catch(()=>{});
+  }
+});
+
+/* ============ Interruptions: phone calls, switching apps, OS audio focus ============ */
 let resumeAttemptTimer = null;
 function tryAutoResume(){
   if(!getSetting(SETTING_AUTORESUME, true)) return;
@@ -617,7 +719,7 @@ function tryAutoResume(){
   clearTimeout(resumeAttemptTimer);
   resumeAttemptTimer = setTimeout(()=>{
     if(userPaused || !audio.paused) return;
-    audio.play().catch(()=>{ /* still blocked (e.g. call still active) — will try again */ });
+    audio.play().catch(()=>{ /* still blocked — will try again */ });
   }, 1200);
 }
 
@@ -634,18 +736,11 @@ document.addEventListener('visibilitychange', ()=>{
   }
 });
 
-// ============ Media Session: lock-screen / notification controls ============
-// This is what lets Android treat the stream as legitimate ongoing media
-// (proper Now Playing controls) rather than just a browser tab, which also
-// makes the OS less eager to fully discard it in the background.
+/* ============ Media Session: lock-screen / notification controls ============ */
 if('mediaSession' in navigator){
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: 'Jesus is LORD Radio',
-    artist: 'Ministry of Repentance and Holiness',
-    album: 'Live Broadcast'
-  });
   navigator.mediaSession.setActionHandler('play', ()=> playBtn.click());
   navigator.mediaSession.setActionHandler('pause', ()=> playBtn.click());
+  navigator.mediaSession.setActionHandler('nexttrack', ()=> nextStationBtn.click());
 }
 
 /* ============ NAV: highlight the section you jump to ============ */
@@ -654,24 +749,21 @@ const navHighlightTargets = {
   '#rptw': document.getElementById('rptw'),
   '#crowntv': document.getElementById('crowntv')
 };
-
 document.querySelectorAll('nav a[href^="#"]').forEach((link)=>{
   link.addEventListener('click', ()=>{
     const target = navHighlightTargets[link.getAttribute('href')];
     if(!target) return;
     target.classList.remove('flash-highlight');
-    void target.offsetWidth; // restart the animation even if clicked again quickly
+    void target.offsetWidth;
     target.classList.add('flash-highlight');
     setTimeout(()=> target.classList.remove('flash-highlight'), 1800);
   });
 });
 
-// Try to start playing as soon as the page loads. Browsers reliably allow
-// autoplay when the audio starts MUTED — starting unmuted from a cold load
-// is what caused the earlier "looks live but silent" bug. If this visitor
-// already unlocked sound in a previous visit, try WITH sound first; only
-// fall back to the muted+banner flow if the browser still blocks that.
+/* ============ Autoplay on load ============ */
 function attemptAutoplay(){
+  loadStation(currentStation);
+
   if(!getSetting(SETTING_AUTOPLAY, true)){
     statusLabel.textContent = 'TAP ▶ TO LISTEN';
     statusLabel.classList.remove('on');
@@ -679,7 +771,7 @@ function attemptAutoplay(){
     return;
   }
 
-  audio.src = RADIO_STREAM_URL;
+  audio.src = RADIO_STATIONS[currentStation].stream;
   setStatus('connecting');
 
   const previouslyUnlocked = localStorage.getItem('radio-sound-unlocked') === 'true';
@@ -693,7 +785,6 @@ function attemptAutoplay(){
         unmuteBanner.style.display = 'block';
       }
     }).catch(()=>{
-      // Blocked even with sound — retry muted, which browsers always allow.
       audio.muted = true;
       audio.play().then(()=>{
         userStarted = true;
@@ -711,14 +802,7 @@ attemptAutoplay();
 
 unmuteBanner.addEventListener('click', unlockSound);
 
-// If the visitor uses the volume slider before tapping the banner,
-// that's also a clear signal they want sound — unmute right then too.
-volumeSlider.addEventListener('input', ()=>{
-  if(audio.muted){
-    unlockSound();
-  }
-});
-
+/* ============ THEME TOGGLE: day / night ============ */
 const root = document.documentElement;
 const themeToggle = document.getElementById('themeToggle');
 
@@ -742,40 +826,14 @@ themeToggle.addEventListener('click', ()=>{
   localStorage.setItem('site-theme', next);
 });
 
-/* ============ CONFIG ============
-   Point this at your deployed Spring Boot service (Render URL). */
-const API_BASE = "https://broadcast-api-8lot.onrender.com";
-
+/* ============ YOUTUBE: built-in channels, live-or-latest via backend ============ */
 let lastVideoId = { rptw: null, crown: null };
 
-/* ============ YOUTUBE: live-or-latest, backed by the Java service ============ */
 async function refreshChannel(channelKey, frameEl, badgeEl){
   try{
     const res = await fetch(`${API_BASE}/api/channel-status?channel=${channelKey}`);
     const data = await res.json();
-
-    if(data.note){
-      console.log(`[${channelKey}] diagnostic:`, data.note);
-      badgeEl.title = data.note;
-    } else {
-      badgeEl.removeAttribute('title');
-    }
-
-    if(data.videoId && data.videoId !== lastVideoId[channelKey]){
-      frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1`;
-      lastVideoId[channelKey] = data.videoId;
-    }
-
-    if(data.live){
-      badgeEl.innerHTML = '<span class="live-dot"></span>LIVE NOW';
-      badgeEl.classList.add('live');
-    } else if(data.videoId){
-      badgeEl.textContent = 'Latest video';
-      badgeEl.classList.remove('live');
-    } else {
-      badgeEl.textContent = 'NOT LIVE NOW';
-      badgeEl.classList.remove('live');
-    }
+    applyChannelStatus(data, frameEl, badgeEl, channelKey, lastVideoId);
   }catch(e){
     console.log(`[${channelKey}] fetch failed:`, e.message);
     badgeEl.textContent = 'Status unavailable';
@@ -783,16 +841,192 @@ async function refreshChannel(channelKey, frameEl, badgeEl){
   }
 }
 
+function applyChannelStatus(data, frameEl, badgeEl, cacheKey, cacheObj){
+  if(data.note){
+    console.log(`[${cacheKey}] diagnostic:`, data.note);
+    badgeEl.title = data.note;
+  } else {
+    badgeEl.removeAttribute('title');
+  }
+
+  if(data.videoId && data.videoId !== cacheObj[cacheKey]){
+    frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1`;
+    cacheObj[cacheKey] = data.videoId;
+  }
+
+  if(data.live){
+    badgeEl.innerHTML = '<span class="live-dot"></span>LIVE NOW';
+    badgeEl.classList.add('live');
+  } else if(data.videoId){
+    badgeEl.textContent = 'Latest video';
+    badgeEl.classList.remove('live');
+  } else {
+    badgeEl.textContent = 'NOT LIVE NOW';
+    badgeEl.classList.remove('live');
+  }
+}
+
 refreshChannel('rptw',  document.getElementById('rptwFrame'),  document.getElementById('rptwBadge'));
 refreshChannel('crown', document.getElementById('crownFrame'), document.getElementById('crownBadge'));
 
-// Poll every 60 seconds.
 setInterval(()=>{
   refreshChannel('rptw',  document.getElementById('rptwFrame'),  document.getElementById('rptwBadge'));
   refreshChannel('crown', document.getElementById('crownFrame'), document.getElementById('crownBadge'));
+  myChannels.forEach(refreshCustomChannel);
 }, 60 * 1000);
 
-/* ============ PWA: register service worker (required for installability) ============ */
+/* ============ MY CHANNELS: visitor-added, personal to this browser only ============ */
+const MY_CHANNELS_KEY = 'my-channels';
+let myChannels = [];
+try{
+  myChannels = JSON.parse(localStorage.getItem(MY_CHANNELS_KEY) || '[]');
+}catch(e){ myChannels = []; }
+
+const channelsGrid = document.getElementById('channelsGrid');
+const addChannelCard = document.getElementById('addChannelCard');
+const addChannelToggle = document.getElementById('addChannelToggle');
+const addChannelForm = document.getElementById('addChannelForm');
+const addChannelInput = document.getElementById('addChannelInput');
+const addChannelSubmit = document.getElementById('addChannelSubmit');
+const addChannelCancel = document.getElementById('addChannelCancel');
+const addChannelError = document.getElementById('addChannelError');
+
+addChannelToggle.addEventListener('click', ()=>{
+  addChannelForm.classList.add('open');
+  addChannelToggle.style.display = 'none';
+  addChannelInput.focus();
+});
+addChannelCancel.addEventListener('click', ()=>{
+  addChannelForm.classList.remove('open');
+  addChannelToggle.style.display = 'inline-block';
+  addChannelInput.value = '';
+  addChannelError.textContent = '';
+});
+
+function saveMyChannels(){
+  localStorage.setItem(MY_CHANNELS_KEY, JSON.stringify(myChannels));
+}
+
+function buildCustomChannelCard(channel){
+  const card = document.createElement('div');
+  card.className = 'channel-card';
+  card.id = `custom-${channel.channelId}`;
+
+  const frameWrap = document.createElement('div');
+  frameWrap.className = 'frame-wrap';
+  const iframe = document.createElement('iframe');
+  iframe.title = channel.title;
+  iframe.allowFullscreen = true;
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.src = `https://www.youtube.com/embed/videoseries?list=UU${channel.channelId.slice(2)}`;
+  frameWrap.appendChild(iframe);
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const metaText = document.createElement('div');
+  const h3 = document.createElement('h3');
+  h3.textContent = channel.title;
+  const desc = document.createElement('p');
+  desc.className = 'desc';
+  desc.textContent = 'Added by you — only visible in your browser.';
+  metaText.appendChild(h3);
+  metaText.appendChild(desc);
+  const badge = document.createElement('span');
+  badge.className = 'badge';
+  badge.id = `badge-${channel.channelId}`;
+  badge.textContent = 'Checking…';
+  meta.appendChild(metaText);
+  meta.appendChild(badge);
+
+  const links = document.createElement('div');
+  links.className = 'channel-links';
+  const liveLink = document.createElement('a');
+  liveLink.href = `https://www.youtube.com/channel/${channel.channelId}/live`;
+  liveLink.target = '_blank';
+  liveLink.rel = 'noopener';
+  liveLink.textContent = 'Watch live on YouTube ↗';
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'remove-channel';
+  removeBtn.textContent = 'Remove';
+  removeBtn.addEventListener('click', ()=>{
+    myChannels = myChannels.filter(c => c.channelId !== channel.channelId);
+    saveMyChannels();
+    card.remove();
+  });
+  links.appendChild(liveLink);
+  links.appendChild(removeBtn);
+
+  card.appendChild(frameWrap);
+  card.appendChild(meta);
+  card.appendChild(links);
+  return card;
+}
+
+let customLastVideoId = {};
+
+async function refreshCustomChannel(channel){
+  const frameEl = document.querySelector(`#custom-${channel.channelId} iframe`);
+  const badgeEl = document.getElementById(`badge-${channel.channelId}`);
+  if(!frameEl || !badgeEl) return;
+  try{
+    const handleParam = channel.handle ? `&handle=${encodeURIComponent(channel.handle)}` : '';
+    const res = await fetch(`${API_BASE}/api/channel-status-custom?channelId=${channel.channelId}${handleParam}`);
+    const data = await res.json();
+    applyChannelStatus(data, frameEl, badgeEl, channel.channelId, customLastVideoId);
+  }catch(e){
+    badgeEl.textContent = 'Status unavailable';
+    badgeEl.classList.remove('live');
+  }
+}
+
+function renderMyChannels(){
+  myChannels.forEach((channel)=>{
+    const card = buildCustomChannelCard(channel);
+    channelsGrid.insertBefore(card, addChannelCard);
+    refreshCustomChannel(channel);
+  });
+}
+renderMyChannels();
+
+addChannelSubmit.addEventListener('click', async ()=>{
+  const input = addChannelInput.value.trim();
+  addChannelError.textContent = '';
+  if(!input){
+    addChannelError.textContent = 'Please enter a channel handle or URL.';
+    return;
+  }
+  addChannelSubmit.disabled = true;
+  addChannelSubmit.textContent = 'Adding…';
+  try{
+    const res = await fetch(`${API_BASE}/api/resolve-channel?input=${encodeURIComponent(input)}`);
+    const data = await res.json();
+    if(data.error || !data.channelId){
+      addChannelError.textContent = "Couldn't find that channel — check the handle or URL and try again.";
+      return;
+    }
+    if(myChannels.some(c => c.channelId === data.channelId)){
+      addChannelError.textContent = "You've already added that channel.";
+      return;
+    }
+    const channel = { channelId: data.channelId, title: data.title || input, handle: data.handle || null };
+    myChannels.push(channel);
+    saveMyChannels();
+    const card = buildCustomChannelCard(channel);
+    channelsGrid.insertBefore(card, addChannelCard);
+    refreshCustomChannel(channel);
+
+    addChannelForm.classList.remove('open');
+    addChannelToggle.style.display = 'inline-block';
+    addChannelInput.value = '';
+  }catch(e){
+    addChannelError.textContent = 'Something went wrong reaching the server — try again shortly.';
+  }finally{
+    addChannelSubmit.disabled = false;
+    addChannelSubmit.textContent = 'Add';
+  }
+});
+
+/* ============ PWA: register service worker ============ */
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('sw.js').catch(()=>{ /* non-fatal — site still works normally */ });
