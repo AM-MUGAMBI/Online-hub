@@ -1021,11 +1021,13 @@ addChannelSubmit.addEventListener('click', async ()=>{
   addChannelSubmit.textContent = 'Adding…';
   try{
     const res = await fetch(`${API_BASE}/api/resolve-channel?input=${encodeURIComponent(input)}`);
-    const data = await res.json();
-    if(data.error || !data.channelId){
-      addChannelError.textContent = "Couldn't find that channel — check the handle or URL and try again.";
-      return;
-    }
+   const data = await res.json();
+
+if(data.error || !data.channelId){
+  console.log("Resolve channel response:", data);
+  addChannelError.textContent = data.error || "Couldn't find that channel.";
+  return;
+}
     if(myChannels.some(c => c.channelId === data.channelId)){
       addChannelError.textContent = "You've already added that channel.";
       return;
