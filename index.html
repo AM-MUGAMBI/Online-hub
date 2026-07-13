@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,8 +139,8 @@
     position:absolute;
     top:60px;
     right:6vw;
-    width:300px;
-    max-height:70vh;
+    width:320px;
+    max-height:85vh;
     overflow-y:auto;
     background:var(--panel);
     border:1px solid var(--line);
@@ -167,6 +168,72 @@
   .settings-hint{color:var(--text-muted); font-size:11px;}
   .settings-row input[type="checkbox"]{
     accent-color:var(--gold); width:18px; height:18px; cursor:pointer; flex-shrink:0;
+  }
+
+  /* ---- Equalizer Styles ---- */
+  .eq-select{
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    accent-color: var(--gold);
+  }
+  .eq-toggle-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 0;
+    font-weight: 500;
+    font-size: 13px;
+    user-select: none;
+  }
+  .eq-toggle-header::after{
+    content: '▼';
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform .2s;
+  }
+  .eq-toggle-header.open::after{
+    transform: rotate(180deg);
+  }
+  .eq-container{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  .eq-container.open{
+    max-height: 420px;
+    margin-top: 10px;
+  }
+  .eq-slider-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .eq-slider-row span.label{
+    width: 50px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  .eq-slider-row input[type="range"]{
+    flex-grow: 1;
+    accent-color: var(--gold);
+    cursor: pointer;
+    height: 4px;
+  }
+  .eq-slider-row span.val{
+    width: 42px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-align: right;
   }
 
   .mini-list{display:flex; flex-direction:column; gap:6px; margin:10px 0;}
@@ -358,6 +425,8 @@
   footer a{color:var(--text-muted); text-decoration:none;}
   footer a:hover{color:var(--gold);}
 </style>
+<!-- Load YouTube IFrame Player API for Sync Control -->
+<script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
@@ -399,6 +468,50 @@
     <div class="settings-row">
       <label for="settingRememberVolume">Remember my volume level</label>
       <input type="checkbox" id="settingRememberVolume">
+    </div>
+  </div>
+
+  <!-- Audio Processing Section -->
+  <div class="settings-section">
+    <h4>Audio Settings</h4>
+    <div class="settings-row">
+      <label for="settingEnableEQ">Enable Equalizer</label>
+      <input type="checkbox" id="settingEnableEQ" checked>
+    </div>
+    <div class="settings-row">
+      <label for="eqPresetSelect">Preset</label>
+      <select id="eqPresetSelect" class="eq-select">
+        <option value="flat">Flat (Default)</option>
+        <option value="speech">🎙 Speech</option>
+        <option value="music">🎵 Music</option>
+        <option value="worship">🎹 Worship</option>
+        <option value="classical">🎼 Classical</option>
+        <option value="bass">🎧 Bass Boost</option>
+        <option value="treble">✨ Treble Boost</option>
+        <option value="night">🌙 Night Listening</option>
+        <option value="car">🚗 Car Speakers</option>
+      </select>
+    </div>
+    <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:6px;">
+      <div style="display:flex; justify-content:space-between; font-size:13px;">
+        <label for="settingVolumeBoost">Volume Boost</label>
+        <span id="volumeBoostVal" class="mono" style="font-size:11px; color:var(--gold);">1.0x</span>
+      </div>
+      <input type="range" id="settingVolumeBoost" min="1" max="3" step="0.1" value="1" style="accent-color:var(--gold); cursor:pointer; width:100%;">
+    </div>
+
+    <div class="eq-toggle-header" id="eqToggleHeader">10-Band Equalizer</div>
+    <div class="eq-container" id="eqContainer">
+      <div class="eq-slider-row"><span class="label">31Hz</span><input type="range" class="eq-band" data-index="0" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">62Hz</span><input type="range" class="eq-band" data-index="1" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">125Hz</span><input type="range" class="eq-band" data-index="2" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">250Hz</span><input type="range" class="eq-band" data-index="3" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">500Hz</span><input type="range" class="eq-band" data-index="4" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">1kHz</span><input type="range" class="eq-band" data-index="5" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">2kHz</span><input type="range" class="eq-band" data-index="6" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">4kHz</span><input type="range" class="eq-band" data-index="7" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">8kHz</span><input type="range" class="eq-band" data-index="8" min="-12" max="12" value="0"><span class="val">0dB</span></div>
+      <div class="eq-slider-row"><span class="label">16kHz</span><input type="range" class="eq-band" data-index="9" min="-12" max="12" value="0"><span class="val">0dB</span></div>
     </div>
   </div>
 
@@ -476,7 +589,7 @@
 
     <div class="channel-card" id="rptw">
       <div class="frame-wrap">
-        <iframe id="rptwFrame" src="https://www.youtube.com/embed/videoseries?list=UUqdgi-yU4fVlOhKZLrz24rw"
+        <iframe id="rptwFrame" src="https://www.youtube.com/embed/videoseries?list=UUqdgi-yU4fVlOhKZLrz24rw&enablejsapi=1"
           title="Repent and Prepare the Way" allowfullscreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
       </div>
@@ -495,7 +608,7 @@
 
     <div class="channel-card" id="crowntv">
       <div class="frame-wrap">
-        <iframe id="crownFrame" src="https://www.youtube.com/embed/videoseries?list=UU3DgiGIrnmfMbBjDQP0oM-w"
+        <iframe id="crownFrame" src="https://www.youtube.com/embed/videoseries?list=UU3DgiGIrnmfMbBjDQP0oM-w&enablejsapi=1"
           title="Crown TV" allowfullscreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
       </div>
@@ -522,7 +635,8 @@
   <span>SMS: +254 727 503 030 · <a href="mailto:jesusislord.fm@gmail.com">jesusislord.fm@gmail.com</a></span>
 </footer>
 
-<audio id="radioAudio" preload="none"></audio>
+<!-- Added crossOrigin="anonymous" to allow Web Audio API processing on cross-domain streams -->
+<audio id="radioAudio" preload="none" crossorigin="anonymous"></audio>
 
 <script>
 /* ============ CONFIG ============ */
@@ -575,6 +689,161 @@ let userPaused = false;
 let reconnectDelay = 2000;
 let reconnectTimer = null;
 let connectWatchdog = null;
+
+/* ============ WEB AUDIO API: EQUALIZER & AUDIO GRAPH ============ */
+let audioCtx = null;
+let sourceNode = null;
+let biquadFilters = [];
+let gainNode = null;
+
+const EQ_FREQUENCIES = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+const EQ_PRESETS = {
+  flat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  speech: [-6, -3, -1, 1, 2, 4, 5, 3, 1, -2],
+  music: [4, 3, 1, 0, -1, 0, 1, 2, 3, 4],
+  worship: [3, 4, 2, 0, 1, 2, 3, 2, 3, 4],
+  classical: [2, 1, 0, 0, -1, -1, 0, 1, 2, 3],
+  bass: [6, 5, 4, 2, 0, 0, 0, 0, 0, 0],
+  treble: [-4, -3, -2, 0, 1, 2, 3, 5, 6, 6],
+  night: [1, 2, 1, 0, 1, 2, 1, 0, -1, -3],
+  car: [-2, 3, 4, 1, -1, 1, 2, 1, 0, -1]
+};
+
+const settingEnableEQ = document.getElementById('settingEnableEQ');
+const eqPresetSelect = document.getElementById('eqPresetSelect');
+const settingVolumeBoost = document.getElementById('settingVolumeBoost');
+const volumeBoostVal = document.getElementById('volumeBoostVal');
+const eqToggleHeader = document.getElementById('eqToggleHeader');
+const eqContainer = document.getElementById('eqContainer');
+const eqBandInputs = document.querySelectorAll('.eq-band');
+
+// Handle UI Expanding
+eqToggleHeader.addEventListener('click', () => {
+  eqToggleHeader.classList.toggle('open');
+  eqContainer.classList.toggle('open');
+});
+
+// Load EQ Settings
+function loadEQSettings() {
+  const isEnabled = localStorage.getItem('eq-enabled') !== 'false';
+  const savedPreset = localStorage.getItem('eq-preset') || 'flat';
+  const savedBoost = parseFloat(localStorage.getItem('eq-volume-boost') || '1.0');
+  let savedBands = [0,0,0,0,0,0,0,0,0,0];
+  try {
+    const saved = localStorage.getItem('eq-bands');
+    if (saved) savedBands = JSON.parse(saved);
+  } catch(e){}
+
+  settingEnableEQ.checked = isEnabled;
+  eqPresetSelect.value = savedPreset;
+  settingVolumeBoost.value = savedBoost;
+  volumeBoostVal.textContent = savedBoost.toFixed(1) + 'x';
+
+  eqBandInputs.forEach((input, index) => {
+    input.value = savedBands[index];
+    input.nextElementSibling.textContent = savedBands[index] + 'dB';
+  });
+}
+
+function saveEQSettings() {
+  localStorage.setItem('eq-enabled', settingEnableEQ.checked);
+  localStorage.setItem('eq-preset', eqPresetSelect.value);
+  localStorage.setItem('eq-volume-boost', settingVolumeBoost.value);
+  const bands = Array.from(eqBandInputs).map(input => parseInt(input.value));
+  localStorage.setItem('eq-bands', JSON.stringify(bands));
+}
+
+// Initialise the Web Audio API Context and Chain
+function initAudioPipeline() {
+  if (audioCtx) return;
+
+  // Create context
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  // Create source from the raw audio element
+  sourceNode = audioCtx.createMediaElementSource(audio);
+
+  // Setup 10-band peaking filters
+  let lastNode = sourceNode;
+  biquadFilters = EQ_FREQUENCIES.map((freq) => {
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "peaking";
+    filter.frequency.value = freq;
+    filter.Q.value = 1.0; 
+    filter.gain.value = 0; 
+    lastNode.connect(filter);
+    lastNode = filter;
+    return filter;
+  });
+
+  // Setup Volume Boost Gain Node
+  gainNode = audioCtx.createGain();
+  gainNode.gain.value = 1.0;
+  lastNode.connect(gainNode);
+
+  // Connect layout out to physical speakers
+  gainNode.connect(audioCtx.destination);
+  
+  applyAudioNodeSettings();
+}
+
+// Map settings values directly onto the live Audio Nodes
+function applyAudioNodeSettings() {
+  if (!audioCtx) return;
+
+  const isEnabled = settingEnableEQ.checked;
+  const boostValue = parseFloat(settingVolumeBoost.value);
+
+  // Apply Peak/Bands
+  eqBandInputs.forEach((input, index) => {
+    const val = isEnabled ? parseInt(input.value) : 0;
+    if (biquadFilters[index]) {
+      biquadFilters[index].gain.setValueAtTime(val, audioCtx.currentTime);
+    }
+  });
+
+  // Apply Volume Boost
+  if (gainNode) {
+    gainNode.gain.setValueAtTime(boostValue, audioCtx.currentTime);
+  }
+}
+
+// Handle adjustments
+settingEnableEQ.addEventListener('change', () => {
+  saveEQSettings();
+  applyAudioNodeSettings();
+});
+
+eqPresetSelect.addEventListener('change', () => {
+  const preset = eqPresetSelect.value;
+  if (EQ_PRESETS[preset]) {
+    const values = EQ_PRESETS[preset];
+    eqBandInputs.forEach((input, idx) => {
+      input.value = values[idx];
+      input.nextElementSibling.textContent = values[idx] + 'dB';
+    });
+  }
+  saveEQSettings();
+  applyAudioNodeSettings();
+});
+
+settingVolumeBoost.addEventListener('input', () => {
+  const val = parseFloat(settingVolumeBoost.value);
+  volumeBoostVal.textContent = val.toFixed(1) + 'x';
+  saveEQSettings();
+  applyAudioNodeSettings();
+});
+
+eqBandInputs.forEach((input) => {
+  input.addEventListener('input', () => {
+    input.nextElementSibling.textContent = input.value + 'dB';
+    eqPresetSelect.value = 'flat'; // Adjusting individual sliders sets preset to flat
+    saveEQSettings();
+    applyAudioNodeSettings();
+  });
+});
+
+loadEQSettings();
 
 /* ============ SETTINGS: stored preferences, toggleable by the user ============ */
 function getSetting(key, defaultValue){
@@ -659,6 +928,12 @@ function setStatus(state){
 }
 
 function connectStream(){
+  // Initialize Web Audio graph on initial play gesture
+  initAudioPipeline();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
   loadStation(currentStation);
   audio.src = stationsList()[currentStation].stream;
   setStatus('connecting');
@@ -699,6 +974,9 @@ function unlockSound(){
 }
 
 playBtn.addEventListener('click', ()=>{
+  // Stop YouTube Videos if they are playing
+  pauseAllYouTubeVideos();
+
   if(!userStarted){
     userStarted = true;
     userPaused = false;
@@ -708,6 +986,8 @@ playBtn.addEventListener('click', ()=>{
     if(audio.paused){ userPaused = false; audio.play(); }
   } else if(audio.paused){
     userPaused = false;
+    // Resume context to ensure audio pipeline isn't suspended by browser
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     audio.play();
   } else {
     userPaused = true;
@@ -725,6 +1005,8 @@ nextStationBtn.addEventListener('click', ()=>{
   audio.muted = wasMuted;
   if(wasPlaying){
     setStatus('connecting');
+    // Re-verify sound node execution state
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     audio.play().catch(()=>{});
   }
 });
@@ -738,6 +1020,7 @@ function tryAutoResume(){
   clearTimeout(resumeAttemptTimer);
   resumeAttemptTimer = setTimeout(()=>{
     if(userPaused || !audio.paused) return;
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     audio.play().catch(()=>{ /* still blocked — will try again */ });
   }, 1200);
 }
@@ -800,6 +1083,7 @@ function attemptAutoplay(){
   if(playPromise !== undefined){
     playPromise.then(()=>{
       userStarted = true;
+      initAudioPipeline(); // Connect pipeline if autoplay succeeds
       if(audio.muted){
         unmuteBanner.style.display = 'block';
       }
@@ -807,6 +1091,7 @@ function attemptAutoplay(){
       audio.muted = true;
       audio.play().then(()=>{
         userStarted = true;
+        initAudioPipeline();
         unmuteBanner.style.display = 'block';
       }).catch(()=>{
         userStarted = false;
@@ -845,6 +1130,55 @@ themeToggle.addEventListener('click', ()=>{
   localStorage.setItem('site-theme', next);
 });
 
+/* ============ YOUTUBE API: Control and Sync Player State ============ */
+let ytPlayers = {};
+
+// Instantiated automatically by the loaded YouTube script
+window.onYouTubeIframeAPIReady = function() {
+  initYouTubePlayer('rptwFrame');
+  initYouTubePlayer('crownFrame');
+};
+
+function initYouTubePlayer(iframeId) {
+  const frame = document.getElementById(iframeId);
+  if (!frame) return;
+  
+  ytPlayers[iframeId] = new YT.Player(iframeId, {
+    events: {
+      'onStateChange': (event) => onPlayerStateChange(event, iframeId)
+    }
+  });
+}
+
+function onPlayerStateChange(event, iframeId) {
+  // If a video starts playing (YT.PlayerState.PLAYING is 1)
+  if (event.data === YT.PlayerState.PLAYING) {
+    // Pause other YT players
+    Object.keys(ytPlayers).forEach((id) => {
+      if (id !== iframeId && ytPlayers[id] && typeof ytPlayers[id].pauseVideo === 'function') {
+        ytPlayers[id].pauseVideo();
+      }
+    });
+
+    // Pause the live Radio Stream
+    if (userStarted && !audio.paused) {
+      userPaused = true;
+      audio.pause();
+      setStatus('paused');
+    }
+  }
+}
+
+function pauseAllYouTubeVideos() {
+  Object.keys(ytPlayers).forEach((id) => {
+    if (ytPlayers[id] && typeof ytPlayers[id].pauseVideo === 'function') {
+      try {
+        ytPlayers[id].pauseVideo();
+      } catch (e) {}
+    }
+  });
+}
+
 /* ============ YOUTUBE: built-in channels, live-or-latest via backend ============ */
 let lastVideoId = { rptw: null, crown: null };
 
@@ -869,8 +1203,10 @@ function applyChannelStatus(data, frameEl, badgeEl, cacheKey, cacheObj){
   }
 
   if(data.videoId && data.videoId !== cacheObj[cacheKey]){
-    frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1`;
+    frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1&enablejsapi=1`;
     cacheObj[cacheKey] = data.videoId;
+    // Re-initialize player connection after iframe resets source
+    setTimeout(() => initYouTubePlayer(frameEl.id), 1000);
   }
 
   if(data.live){
@@ -929,6 +1265,9 @@ function renderMyChannelsList(){
       saveMyChannels();
       const card = document.getElementById(`custom-${channel.channelId}`);
       if(card) card.remove();
+      if(ytPlayers[`customFrame-${channel.channelId}`]) {
+        delete ytPlayers[`customFrame-${channel.channelId}`];
+      }
       renderMyChannelsList();
     });
     row.appendChild(label);
@@ -945,10 +1284,11 @@ function buildCustomChannelCard(channel){
   const frameWrap = document.createElement('div');
   frameWrap.className = 'frame-wrap';
   const iframe = document.createElement('iframe');
+  iframe.id = `customFrame-${channel.channelId}`;
   iframe.title = channel.title;
   iframe.allowFullscreen = true;
   iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-  iframe.src = `https://www.youtube.com/embed/videoseries?list=UU${channel.channelId.slice(2)}`;
+  iframe.src = `https://www.youtube.com/embed/videoseries?list=UU${channel.channelId.slice(2)}&enablejsapi=1`;
   frameWrap.appendChild(iframe);
 
   const meta = document.createElement('div');
@@ -980,6 +1320,10 @@ function buildCustomChannelCard(channel){
   card.appendChild(frameWrap);
   card.appendChild(meta);
   card.appendChild(links);
+  
+  // Register YouTube player hooks
+  setTimeout(() => initYouTubePlayer(`customFrame-${channel.channelId}`), 1000);
+
   return card;
 }
 
@@ -1021,13 +1365,11 @@ addChannelSubmit.addEventListener('click', async ()=>{
   addChannelSubmit.textContent = 'Adding…';
   try{
     const res = await fetch(`${API_BASE}/api/resolve-channel?input=${encodeURIComponent(input)}`);
-   const data = await res.json();
-
-if(data.error || !data.channelId){
-  console.log("Resolve channel response:", data);
-  addChannelError.textContent = data.error || "Couldn't find that channel.";
-  return;
-}
+    const data = await res.json();
+    if(data.error || !data.channelId){
+      addChannelError.textContent = "Couldn't find that channel — check the handle or URL and try again.";
+      return;
+    }
     if(myChannels.some(c => c.channelId === data.channelId)){
       addChannelError.textContent = "You've already added that channel.";
       return;
@@ -1117,3 +1459,5 @@ if('serviceWorker' in navigator){
 
 </body>
 </html>
+
+```
