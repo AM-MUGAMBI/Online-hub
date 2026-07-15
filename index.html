@@ -1019,20 +1019,44 @@ nextStationBtn.addEventListener('click', ()=>{
 
 /* ============ Interruptions: phone calls, switching apps, OS audio focus ============ */
 let resumeAttemptTimer = null;
-function tryAutoResume(){
-  if(!getSetting(SETTING_AUTORESUME, true)) return;
-  if(userPaused || !userStarted) return;
-  if(!audio.paused) return;
+
+function tryAutoResume() {
+  if (!getSetting(SETTING_AUTORESUME, true)) return;
+  if (userPaused || !userStarted) return;
+  if (!audio.paused) return;
+  
   clearTimeout(resumeAttemptTimer);
-  resumeAttemptTimer = setTimeout(()=>{
-    if(userPaused || !audio.paused) return;
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    audio.play().catch(()=>{ /* still blocked — will try again */ });
-  }, 1200);
+  
+  resumeAttemptTimer = setTimeout(() => {
+    // If the user is looking at the page, do NOT fight for focus
+    if (document.visibilityState === 'visible') return;
+    
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    // Only attempt to play if the website is in the background
+    if (document.hidden) {
+      audio.play().catch((e) => {
+        // This stops the loop: if the OS/YouTube blocks us, we just log it
+        console.log("System/YouTube App blocked auto-resume (Focus conflict):", e);
+      });
+    }
+  }, 2000); // Wait 2 seconds to let the system stabilize
 }
 
-audio.addEventListener('pause', ()=>{
-  if(!userPaused && userStarted){
+audio.addEventListener('pause', () => {
+  // If the user manually paused it, we honor that forever
+  if (userPaused) return;
+
+  // If the page is visible, don't auto-resume (avoids the fight)
+  if (document.visibilityState === 'visible') {
+    setStatus('ready'); // or your default status
+    return;
+  }
+
+  // Only auto-resume if we were supposed to be playing and are backgrounded
+  if (userStarted) {
     setStatus('reconnecting');
     tryAutoResume();
   }
