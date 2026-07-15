@@ -1018,9 +1018,15 @@ nextStationBtn.addEventListener('click', ()=>{
 });
 
 /* ============ Interruptions: phone calls, switching apps, OS audio focus ============ */
+/* ============ CONFIG: Add this at the top of your script ============ */
 let resumeAttemptTimer = null;
+let systemBlocked = false; // Flag to stop the focus fight
+
+/* ============ REPLACEMENT FUNCTIONS ============ */
 
 function tryAutoResume() {
+  // If we've been blocked by the system (YouTube app), stop trying
+  if (systemBlocked) return; 
   if (!getSetting(SETTING_AUTORESUME, true)) return;
   if (userPaused || !userStarted) return;
   if (!audio.paused) return;
@@ -1028,39 +1034,48 @@ function tryAutoResume() {
   clearTimeout(resumeAttemptTimer);
   
   resumeAttemptTimer = setTimeout(() => {
-    // If the user is looking at the page, do NOT fight for focus
+    // If the website is visible to the user, NEVER auto-resume. 
+    // This stops the fight while the user is looking at your page.
     if (document.visibilityState === 'visible') return;
     
     if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
     
-    // Only attempt to play if the website is in the background
+    // Only attempt to play if we are backgrounded (tab hidden)
     if (document.hidden) {
       audio.play().catch((e) => {
-        // This stops the loop: if the OS/YouTube blocks us, we just log it
-        console.log("System/YouTube App blocked auto-resume (Focus conflict):", e);
+        // If the OS/YouTube blocks us, trigger the lock
+        systemBlocked = true; 
+        console.log("System blocked playback. Auto-resume locked to prevent loop.");
       });
     }
-  }, 2000); // Wait 2 seconds to let the system stabilize
+  }, 2000); // 2-second delay to let the OS stabilize
 }
 
+// Update your audio pause listener
 audio.addEventListener('pause', () => {
-  // If the user manually paused it, we honor that forever
-  if (userPaused) return;
-
-  // If the page is visible, don't auto-resume (avoids the fight)
-  if (document.visibilityState === 'visible') {
-    setStatus('ready'); // or your default status
-    return;
-  }
-
-  // Only auto-resume if we were supposed to be playing and are backgrounded
-  if (userStarted) {
-    setStatus('reconnecting');
-    tryAutoResume();
+  // Only auto-resume if we didn't pause it ourselves
+  if (!userPaused && userStarted) {
+     setStatus('reconnecting');
+     tryAutoResume();
   }
 });
+
+/* ============ IMPORTANT: Update your existing play button logic ============ */
+// Find your existing playBtn.onclick and ensure it includes the systemBlocked reset:
+playBtn.onclick = () => {
+  systemBlocked = false; // Unlock the radio when the user clicks play
+  
+  if (audio.paused) {
+    userPaused = false;
+    audio.play();
+  } else {
+    userPaused = true;
+    audio.pause();
+  }
+  // ... (rest of your existing code here)
+};
 
 document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState === 'visible'){
