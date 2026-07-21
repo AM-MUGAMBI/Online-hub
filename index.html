@@ -81,14 +81,15 @@
     100%{transform:translateX(-100%);}
   }
 
-/* ---- Header / Hero Permanent Compact Layout ---- */
+/* ---- Header / Default Laptop View ---- */
   header{
     position:relative;
-    padding:10px 4vw;
+    padding:8px 4vw;
     display:flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -97,10 +98,10 @@
     align-items:center; 
     gap:10px; 
     min-width:0;
-    width: 100%;
+    flex: 1 1 200px;
   }
   .brand-mark{
-    width:36px;height:36px;border-radius:50%;
+    width:38px;height:38px;border-radius:50%;
     border:1.5px solid var(--gold);
     display:flex;align-items:center;justify-content:center;
     overflow:hidden;
@@ -128,47 +129,61 @@
   nav{
     display:flex; 
     align-items:center; 
-    justify-content: space-between;
-    width: 100%;
-    gap: 4px;
-    padding-top: 2px;
-    max-width: 100%;
+    gap:12px; 
+    flex-wrap:wrap;
+    flex: 1 1 auto;
+    justify-content: flex-end;
   }
   nav a{
     color:var(--text-muted);
     text-decoration:none;
-    font-size:11.5px;
+    font-size:13px;
     transition:color .2s;
     white-space:nowrap;
   }
   nav a:hover{color:var(--gold);}
 
-  .flash-highlight{
-    animation: flashHighlight 1.8s ease;
-  }
-  @keyframes flashHighlight{
-    0%{box-shadow:0 0 0 0 rgba(201,162,39,0);}
-    12%{box-shadow:0 0 0 6px rgba(201,162,39,0.4);}
-    100%{box-shadow:0 0 0 0 rgba(201,162,39,0);}
-  }
-
   .theme-toggle{
-    margin-left:0;
-    width:30px; height:30px; border-radius:50%;
+    margin-left:12px;
+    width:34px; height:34px; border-radius:50%;
     border:1px solid var(--line);
     background:var(--panel);
     color:var(--gold);
     cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    font-size:13px;
+    font-size:14px;
     flex-shrink:0;
     transition:transform .15s, background .25s ease;
   }
   .theme-toggle:hover{transform:scale(1.06);}
 
-  .next-btn{
-    width:44px; height:44px; font-size:16px;
-    background:var(--panel-raised); color:var(--gold);
+  /* ---- Responsive Stack (Triggers on smaller laptop windows and all phones) ---- */
+  @media(max-width: 850px) {
+    header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2px;
+      padding: 6px 3vw;
+    }
+    .brand {
+      width: 100%;
+      flex: none;
+    }
+    nav {
+      justify-content: space-between;
+      width: 100%;
+      gap: 2px;
+      padding-top: 0;
+    }
+    nav a {
+      font-size: 11.5px;
+    }
+    .theme-toggle {
+      margin-left: 0;
+      width: 28px;
+      height: 28px;
+      font-size: 11px;
+    }
   }
 
   .settings-panel{
