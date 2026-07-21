@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,37 +74,75 @@
     100%{transform:translateX(-100%);}
   }
 
-  /* ---- Header / Hero ---- */
+/* ---- Header / Hero Permanent Compact Layout ---- */
   header{
     position:relative;
-    padding:28px 6vw 10px;
+    padding:10px 4vw;
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
   }
-  .brand{display:flex; align-items:center; gap:14px;}
+  .brand{
+    display:flex; 
+    align-items:center; 
+    gap:10px; 
+    min-width:0;
+    width: 100%;
+  }
   .brand-mark{
-    width:44px;height:44px;border-radius:50%;
+    width:36px;height:36px;border-radius:50%;
     border:1.5px solid var(--gold);
     display:flex;align-items:center;justify-content:center;
     overflow:hidden;
     background:var(--panel);
+    flex-shrink:0;
   }
   .brand-mark img{width:100%; height:100%; object-fit:cover;}
-  .brand-name{font-size:15px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);}
-  .brand-name strong{display:block; color:var(--text); font-size:17px; letter-spacing:0.02em;}
+  .brand-name{
+    font-size:12.5px; 
+    letter-spacing:0.06em; 
+    text-transform:uppercase; 
+    color:var(--text-muted); 
+    min-width: 0;
+  }
+  .brand-name strong{
+    display:block; 
+    color:var(--text); 
+    font-size:14px; 
+    letter-spacing:0.02em; 
+    white-space:nowrap; 
+    overflow:hidden; 
+    text-overflow:ellipsis;
+  }
 
-  nav{display:flex; align-items:center; gap:0;}
+  nav{
+    display:flex; 
+    align-items:center; 
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+    padding-top: 2px;
+  }
   nav a{
     color:var(--text-muted);
     text-decoration:none;
-    font-size:14px;
-    margin-left:26px;
+    font-size:12.5px;
     transition:color .2s;
+    white-space:nowrap;
   }
   nav a:hover{color:var(--gold);}
+
+  .theme-toggle{
+    width:32px; height:32px; border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--gold);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    flex-shrink:0;
+  }
 
   .flash-highlight{
     animation: flashHighlight 1.8s ease;
@@ -361,8 +398,8 @@
     transition:transform .15s;
   }
   .play-btn:hover{transform:scale(1.05);}
-  .play-meta{font-size:13px; color:var(--text-muted);}
-  .play-meta strong{display:block; color:var(--text); font-size:15px; font-family:'Fraunces',serif;}
+  .play-meta{font-size:13px; color:var(--text-muted); min-width:0; flex:1;}
+  .play-meta strong{display:block; color:var(--text); font-size:15px; font-family:'Fraunces',serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
   .console-links{
     margin-top:18px; padding-top:16px; border-top:1px solid var(--line);
@@ -371,7 +408,7 @@
   .console-links a{color:var(--text-muted); text-decoration:none;}
   .console-links a:hover{color:var(--gold);}
 
-  /* ---- Section shell ---- */
+  /* ---- Section shell & Responsive Mobile Channel Fix ---- */
   section.block{padding:10px 6vw 60px;}
   .block-head{
     display:flex; justify-content:space-between; align-items:baseline;
@@ -383,10 +420,9 @@
 
   .channels{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
     gap:26px;
   }
-  @media(max-width:880px){ .channels{grid-template-columns:1fr;} }
 
   .channel-card{
     background:var(--panel);
@@ -394,6 +430,8 @@
     border-radius:16px;
     overflow:hidden;
     transition:background .25s ease;
+    display: flex;
+    flex-direction: column;
   }
   .channel-card .frame-wrap{
     position:relative; width:100%; aspect-ratio:16/9; background:#000;
@@ -404,8 +442,9 @@
   .channel-card .meta{
     padding:18px 20px 20px;
     display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+    flex-wrap: wrap;
   }
-  .channel-card h3{font-size:18px; margin-bottom:4px;}
+  .channel-card h3{font-size:18px; margin-bottom:4px; word-break: break-word;}
   .channel-card .desc{font-size:12.5px; color:var(--text-muted); margin:0;}
   .badge{
     font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em;
@@ -414,8 +453,8 @@
   }
   .badge.live{ color:#ff8a8a; border-color:rgba(255,138,138,0.4); background:rgba(178,58,58,0.12); }
   .badge.live .live-dot{width:6px;height:6px; display:inline-block; margin-right:5px;}
-  .channel-links{padding:0 20px 20px; display:flex; gap:16px; font-size:12px; align-items:center;}
-  .channel-links a{color:var(--gold); text-decoration:none;}
+  .channel-links{padding:0 20px 20px; display:flex; gap:16px; font-size:12px; align-items:center; flex-wrap: wrap; margin-top: auto;}
+  .channel-links a{color:var(--gold); text-decoration:none; word-break: break-all;}
 
   footer{
     padding:34px 6vw 44px; border-top:1px solid var(--line);
@@ -462,7 +501,7 @@
       <input type="checkbox" id="settingAutoplay">
     </div>
     <div class="settings-row">
-      <label for="settingAutoResume">Auto-resume after interruptions<br><span class="settings-hint">(calls, switching apps)</span></label>
+      <label for="settingAutoResume">Auto-resume after interruptions<br><span class="settings-hint">(network drops only)</span></label>
       <input type="checkbox" id="settingAutoResume">
     </div>
     <div class="settings-row">
@@ -596,7 +635,7 @@
       <div class="meta">
         <div>
           <h3>Repent and Prepare the Way</h3>
-          <p class="desc">Official channel of the Ministry of Repentance and Holiness. Live will appear once we are live.</p>
+          <p class="desc">Official channel of the Ministry of Repentance and Holiness.</p>
         </div>
         <span class="badge" id="rptwBadge">Checking…</span>
       </div>
@@ -615,7 +654,7 @@
       <div class="meta">
         <div>
           <h3>Crown TV</h3>
-          <p class="desc">Crown TV station is based in Nakuru, Kenya. Live will appear once we are live.</p>
+          <p class="desc">Crown TV station is based in Nakuru, Kenya.</p>
         </div>
         <span class="badge" id="crownBadge">Checking…</span>
       </div>
@@ -625,8 +664,6 @@
       </div>
     </div>
 
-    <!-- Visitor-added channels render here dynamically -->
-
   </div>
 </section>
 
@@ -635,14 +672,12 @@
   <span>SMS: +254 727 503 030 · <a href="mailto:jesusislord.fm@gmail.com">jesusislord.fm@gmail.com</a></span>
 </footer>
 
-<!-- Added crossOrigin="anonymous" to allow Web Audio API processing on cross-domain streams -->
 <audio id="radioAudio" preload="none" crossorigin="anonymous"></audio>
 
 <script>
 /* ============ CONFIG ============ */
 const API_BASE = "https://broadcast-api-8lot.onrender.com";
 
-/* ============ RADIO: built-in stations — never editable by visitors ============ */
 const RADIO_STATIONS = [
   {
     name: "Jesus is LORD Radio",
@@ -664,7 +699,6 @@ const RADIO_STATIONS = [
   }
 ];
 
-/* Personal stations a visitor adds themselves — stored locally, merged in at runtime */
 function getPersonalStations(){
   try{ return JSON.parse(localStorage.getItem('my-radio-stations') || '[]'); }
   catch(e){ return []; }
@@ -692,11 +726,26 @@ const unmuteBanner = document.getElementById('unmuteBanner');
 
 let userStarted = false;
 let userPaused = false;
-let reconnectDelay = 2000;
-let reconnectTimer = null;
-let connectWatchdog = null;
+let systemBlocked = false; // Prevents focus-fighting loop with external apps
 
-/* ============ WEB AUDIO API: EQUALIZER & AUDIO GRAPH ============ */
+function setStatus(state) {
+  if (state === 'playing') {
+    statusLabel.textContent = "LIVE";
+    statusLabel.className = "console-status on";
+    waveform.classList.remove('paused');
+    playBtn.textContent = "❚❚";
+  } else if (state === 'paused') {
+    statusLabel.textContent = "PAUSED";
+    statusLabel.className = "console-status off";
+    waveform.classList.add('paused');
+    playBtn.textContent = "▶";
+  } else if (state === 'reconnecting') {
+    statusLabel.textContent = "RECONNECTING…";
+    statusLabel.className = "console-status off";
+  }
+}
+
+/* ============ AUDIO PIPELINE & EQUALIZER ============ */
 let audioCtx = null;
 let sourceNode = null;
 let biquadFilters = [];
@@ -723,13 +772,11 @@ const eqToggleHeader = document.getElementById('eqToggleHeader');
 const eqContainer = document.getElementById('eqContainer');
 const eqBandInputs = document.querySelectorAll('.eq-band');
 
-// Handle UI Expanding
 eqToggleHeader.addEventListener('click', () => {
   eqToggleHeader.classList.toggle('open');
   eqContainer.classList.toggle('open');
 });
 
-// Load EQ Settings
 function loadEQSettings() {
   const isEnabled = localStorage.getItem('eq-enabled') !== 'false';
   const savedPreset = localStorage.getItem('eq-preset') || 'flat';
@@ -759,17 +806,11 @@ function saveEQSettings() {
   localStorage.setItem('eq-bands', JSON.stringify(bands));
 }
 
-// Initialise the Web Audio API Context and Chain
 function initAudioPipeline() {
   if (audioCtx) return;
-
-  // Create context
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
-  // Create source from the raw audio element
   sourceNode = audioCtx.createMediaElementSource(audio);
 
-  // Setup 10-band peaking filters
   let lastNode = sourceNode;
   biquadFilters = EQ_FREQUENCIES.map((freq) => {
     const filter = audioCtx.createBiquadFilter();
@@ -782,25 +823,19 @@ function initAudioPipeline() {
     return filter;
   });
 
-  // Setup Volume Boost Gain Node
   gainNode = audioCtx.createGain();
   gainNode.gain.value = 1.0;
   lastNode.connect(gainNode);
-
-  // Connect layout out to physical speakers
   gainNode.connect(audioCtx.destination);
   
   applyAudioNodeSettings();
 }
 
-// Map settings values directly onto the live Audio Nodes
 function applyAudioNodeSettings() {
   if (!audioCtx) return;
-
   const isEnabled = settingEnableEQ.checked;
   const boostValue = parseFloat(settingVolumeBoost.value);
 
-  // Apply Peak/Bands
   eqBandInputs.forEach((input, index) => {
     const val = isEnabled ? parseInt(input.value) : 0;
     if (biquadFilters[index]) {
@@ -808,18 +843,12 @@ function applyAudioNodeSettings() {
     }
   });
 
-  // Apply Volume Boost
   if (gainNode) {
     gainNode.gain.setValueAtTime(boostValue, audioCtx.currentTime);
   }
 }
 
-// Handle adjustments
-settingEnableEQ.addEventListener('change', () => {
-  saveEQSettings();
-  applyAudioNodeSettings();
-});
-
+settingEnableEQ.addEventListener('change', () => { saveEQSettings(); applyAudioNodeSettings(); });
 eqPresetSelect.addEventListener('change', () => {
   const preset = eqPresetSelect.value;
   if (EQ_PRESETS[preset]) {
@@ -832,26 +861,22 @@ eqPresetSelect.addEventListener('change', () => {
   saveEQSettings();
   applyAudioNodeSettings();
 });
-
 settingVolumeBoost.addEventListener('input', () => {
-  const val = parseFloat(settingVolumeBoost.value);
-  volumeBoostVal.textContent = val.toFixed(1) + 'x';
+  volumeBoostVal.textContent = parseFloat(settingVolumeBoost.value).toFixed(1) + 'x';
   saveEQSettings();
   applyAudioNodeSettings();
 });
-
 eqBandInputs.forEach((input) => {
   input.addEventListener('input', () => {
     input.nextElementSibling.textContent = input.value + 'dB';
-    eqPresetSelect.value = 'flat'; // Adjusting individual sliders sets preset to flat
+    eqPresetSelect.value = 'flat';
     saveEQSettings();
     applyAudioNodeSettings();
   });
 });
-
 loadEQSettings();
 
-/* ============ SETTINGS: stored preferences, toggleable by the user ============ */
+/* ============ PREFERENCES & SETTINGS ============ */
 function getSetting(key, defaultValue){
   const v = localStorage.getItem(key);
   return v === null ? defaultValue : v === 'true';
@@ -876,630 +901,166 @@ settingAutoplayEl.addEventListener('change', ()=> setSetting(SETTING_AUTOPLAY, s
 settingAutoResumeEl.addEventListener('change', ()=> setSetting(SETTING_AUTORESUME, settingAutoResumeEl.checked));
 settingRememberVolumeEl.addEventListener('change', ()=> setSetting(SETTING_REMEMBER_VOLUME, settingRememberVolumeEl.checked));
 
-const settingsToggle = document.getElementById('settingsToggle');
-const settingsPanel = document.getElementById('settingsPanel');
-settingsToggle.addEventListener('click', (e)=>{
-  e.stopPropagation();
-  settingsPanel.classList.toggle('open');
-});
-document.addEventListener('click', (e)=>{
-  if(settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && e.target !== settingsToggle){
-    settingsPanel.classList.remove('open');
-  }
-});
-
-// Volume: restore the visitor's last level if they want that remembered.
-const rememberVolume = getSetting(SETTING_REMEMBER_VOLUME, true);
-const savedVolume = rememberVolume ? localStorage.getItem('radio-volume-level') : null;
-const initialVolume = savedVolume !== null ? Number(savedVolume) : 80;
-volumeSlider.value = initialVolume;
-audio.volume = initialVolume / 100;
-volumeIcon.textContent = initialVolume == 0 ? '🔇' : initialVolume < 50 ? '🔉' : '🔊';
-
-volumeSlider.addEventListener('input', ()=>{
-  const level = Number(volumeSlider.value) / 100;
-  audio.volume = level;
-  volumeIcon.textContent = level === 0 ? '🔇' : level < 0.5 ? '🔉' : '🔊';
-  if(getSetting(SETTING_REMEMBER_VOLUME, true)){
-    localStorage.setItem('radio-volume-level', volumeSlider.value);
-  }
-  if(audio.muted){
-    unlockSound();
-  }
-});
-
-/* ============ Station loading / switching ============ */
-function loadStation(index){
-  currentStation = index;
-  const station = stationsList()[index];
-  stationName.textContent = station.name;
-  stationDescription.textContent = station.slogan;
-  stationFrequency.textContent = station.frequency;
-
-  if('mediaSession' in navigator){
+/* ============ MEDIA SESSION & PLAYER CONTROLS ============ */
+function setupMediaSession() {
+  if ('mediaSession' in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: station.name,
-      artist: 'Ministry of Repentance and Holiness',
-      album: 'Live Broadcast'
+      title: stationsList()[currentStation].name,
+      artist: stationsList()[currentStation].slogan,
+      album: 'Jesus is LORD Radio',
+      artwork: [{ src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSipPBYGyH4dfHDORqmJkQbWRUtSSmsj-O8cPRsydk4Tg&s=10', sizes: '192x192', type: 'image/png' }]
     });
+    navigator.mediaSession.setActionHandler('play', () => { playBtn.click(); });
+    navigator.mediaSession.setActionHandler('pause', () => { playBtn.click(); });
   }
 }
 
-function setStatus(state){
-  statusLabel.textContent = state === 'live' ? 'ON AIR' : state === 'connecting' ? 'CONNECTING…' : state === 'paused' ? 'PAUSED' : 'RECONNECTING…';
-  statusLabel.classList.toggle('on', state === 'live');
-  statusLabel.classList.toggle('off', state !== 'live');
-  waveform.classList.toggle('paused', state !== 'live');
-  playBtn.textContent = state === 'live' ? '❚❚' : '▶';
+function loadStation(index) {
+  const list = stationsList();
+  if (index >= list.length) index = 0;
+  currentStation = index;
+  const st = list[currentStation];
+
+  audio.src = st.stream;
+  audio.load();
+  stationName.textContent = st.name;
+  stationDescription.textContent = st.slogan;
+  stationFrequency.textContent = st.frequency || "Online stream";
+  setupMediaSession();
 }
 
-function connectStream(){
-  // Initialize Web Audio graph on initial play gesture
+function togglePlay() {
   initAudioPipeline();
   if (audioCtx && audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
 
-  loadStation(currentStation);
-  audio.src = stationsList()[currentStation].stream;
-  setStatus('connecting');
-  audio.play().catch(()=>{ /* will retry on next user tap if this needs a fresh gesture */ });
-
-  clearTimeout(connectWatchdog);
-  connectWatchdog = setTimeout(()=>{
-    if(userStarted && audio.paused){
-      scheduleReconnect();
-    }
-  }, 8000);
-}
-
-audio.addEventListener('playing', ()=>{
-  setStatus('live');
-  reconnectDelay = 2000;
-  clearTimeout(connectWatchdog);
-  unmuteBanner.style.display = audio.muted ? 'block' : 'none';
-});
-audio.addEventListener('waiting', ()=> setStatus('connecting'));
-audio.addEventListener('error', scheduleReconnect);
-audio.addEventListener('stalled', scheduleReconnect);
-
-function scheduleReconnect(){
-  if(!userStarted) return;
-  setStatus('reconnecting');
-  clearTimeout(reconnectTimer);
-  reconnectTimer = setTimeout(()=>{
-    connectStream();
-    reconnectDelay = Math.min(reconnectDelay * 1.5, 20000);
-  }, reconnectDelay);
-}
-
-function unlockSound(){
-  audio.muted = false;
-  unmuteBanner.style.display = 'none';
-  localStorage.setItem('radio-sound-unlocked', 'true');
-}
-
-playBtn.addEventListener('click', ()=>{
-  // Stop YouTube Videos if they are playing
-  pauseAllYouTubeVideos();
-
-  if(!userStarted){
+  if (audio.paused) {
     userStarted = true;
     userPaused = false;
-    connectStream();
-  } else if(audio.muted){
-    unlockSound();
-    if(audio.paused){ userPaused = false; audio.play(); }
-  } else if(audio.paused){
-    userPaused = false;
-    // Resume context to ensure audio pipeline isn't suspended by browser
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    audio.play();
+    systemBlocked = false;
+    audio.play().then(() => {
+      setStatus('playing');
+      unmuteBanner.style.display = 'none';
+    }).catch(err => {
+      console.log("Playback blocked, showing unmute banner:", err);
+      unmuteBanner.style.display = 'block';
+    });
   } else {
     userPaused = true;
     audio.pause();
     setStatus('paused');
   }
+}
+
+playBtn.addEventListener('click', togglePlay);
+unmuteBanner.addEventListener('click', () => {
+  unmuteBanner.style.display = 'none';
+  togglePlay();
 });
 
-nextStationBtn.addEventListener('click', ()=>{
-  const wasPlaying = userStarted && !audio.paused;
-  const wasMuted = audio.muted;
-  currentStation = (currentStation + 1) % stationsList().length;
+nextStationBtn.addEventListener('click', () => {
+  const list = stationsList();
+  currentStation = (currentStation + 1) % list.length;
   loadStation(currentStation);
-  audio.src = stationsList()[currentStation].stream;
-  audio.muted = wasMuted;
-  if(wasPlaying){
-    setStatus('connecting');
-    // Re-verify sound node execution state
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    audio.play().catch(()=>{});
+  if (userStarted) {
+    audio.play().then(() => setStatus('playing')).catch(() => {});
   }
 });
 
-/* ============ Interruptions: phone calls, switching apps, OS audio focus ============ */
-/* ============ CONFIG: Add this at the top of your script ============ */
-let resumeAttemptTimer = null;
-let systemBlocked = false; // Flag to stop the focus fight
-
-/* ============ REPLACEMENT FUNCTIONS ============ */
-
-function tryAutoResume() {
-  // If we've been blocked by the system (YouTube app), stop trying
-  if (systemBlocked) return; 
-  if (!getSetting(SETTING_AUTORESUME, true)) return;
-  if (userPaused || !userStarted) return;
-  if (!audio.paused) return;
-  
-  clearTimeout(resumeAttemptTimer);
-  
-  resumeAttemptTimer = setTimeout(() => {
-    // If the website is visible to the user, NEVER auto-resume. 
-    // This stops the fight while the user is looking at your page.
-    if (document.visibilityState === 'visible') return;
-    
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    
-    // Only attempt to play if we are backgrounded (tab hidden)
-    if (document.hidden) {
-      audio.play().catch((e) => {
-        // If the OS/YouTube blocks us, trigger the lock
-        systemBlocked = true; 
-        console.log("System blocked playback. Auto-resume locked to prevent loop.");
-      });
-    }
-  }, 2000); // 2-second delay to let the OS stabilize
-}
-
-// Update your audio pause listener
+// Audio event hooks
+audio.addEventListener('play', () => setStatus('playing'));
 audio.addEventListener('pause', () => {
-  // Only auto-resume if we didn't pause it ourselves
-  if (!userPaused && userStarted) {
-     setStatus('reconnecting');
-     tryAutoResume();
+  // If user paused it explicitly or the system forced it due to an external app (like YouTube), 
+  // honor it and do NOT trigger a focus fight loop.
+  if (userPaused || document.hidden || systemBlocked) {
+    setStatus('paused');
+    return;
+  }
+  // Otherwise, handle accidental disconnects cleanly
+  if (userStarted && getSetting(SETTING_AUTORESUME, true)) {
+    setStatus('reconnecting');
+    setTimeout(() => {
+      if (!userPaused && audio.paused && !document.hidden) {
+        audio.play().catch(() => { systemBlocked = true; setStatus('paused'); });
+      }
+    }, 1500);
+  } else {
+    setStatus('paused');
   }
 });
 
-/* ============ IMPORTANT: Update your existing play button logic ============ */
-// Find your existing playBtn.onclick and ensure it includes the systemBlocked reset:
-playBtn.onclick = () => {
-  systemBlocked = false; // Unlock the radio when the user clicks play
-  
-  if (audio.paused) {
-    userPaused = false;
-    audio.play();
-  } else {
-    userPaused = true;
-    audio.pause();
+// Volume control
+const savedVol = localStorage.getItem('radio-volume');
+if (savedVol !== null && getSetting(SETTING_REMEMBER_VOLUME, true)) {
+  volumeSlider.value = savedVol;
+  audio.volume = savedVol / 100;
+} else {
+  audio.volume = 0.8;
+}
+
+volumeSlider.addEventListener('input', () => {
+  audio.volume = volumeSlider.value / 100;
+  if (getSetting(SETTING_REMEMBER_VOLUME, true)) {
+    localStorage.setItem('radio-volume', volumeSlider.value);
   }
-  // ... (rest of your existing code here)
+});
+
+/* ============ YOUTUBE LIVE STATUS CHECKER ============ */
+async function updateChannelStatuses() {
+  const channels = [
+    { key: 'rptw', id: 'rptwBadge', frame: 'rptwFrame', listId: 'UUqdgi-yU4fVlOhKZLrz24rw' },
+    { key: 'crowntv', id: 'crownBadge', frame: 'crownFrame', listId: 'UU3DgiGIrnmfMbBjDQP0oM-w' }
+  ];
+
+  for(let ch of channels) {
+    try {
+      const res = await fetch(`${API_BASE}/api/channel-status?channel=${ch.key}`);
+      const data = await res.json();
+      const badge = document.getElementById(ch.id);
+      
+      if(data.isLive) {
+        badge.className = "badge live";
+        badge.innerHTML = `<span class="live-dot"></span>LIVE`;
+      } else {
+        badge.className = "badge";
+        badge.textContent = "OFFLINE";
+      }
+      if(data.videoId) {
+        const frame = document.getElementById(ch.frame);
+        const embedUrl = `https://www.youtube.com/embed/${data.videoId}?enablejsapi=1`;
+        if(frame.src.indexOf(data.videoId) === -1) {
+          frame.src = embedUrl;
+        }
+      }
+    } catch(e) {
+      const badge = document.getElementById(ch.id);
+      badge.className = "badge";
+      badge.textContent = "LATEST";
+    }
+  }
+}
+
+// UI Toggles
+document.getElementById('themeToggle').onclick = () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? '' : 'light';
+  if(next) document.documentElement.setAttribute('data-theme', next);
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('theme', next);
+};
+if(localStorage.getItem('theme') === 'light') {
+  document.documentElement.setAttribute('data-theme', 'light');
+}
+
+document.getElementById('settingsToggle').onclick = () => {
+  document.getElementById('settingsPanel').classList.toggle('open');
 };
 
-document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState === 'visible'){
-    tryAutoResume();
-  }
-});
-
-/* ============ Media Session: lock-screen / notification controls ============ */
-if('mediaSession' in navigator){
-  navigator.mediaSession.setActionHandler('play', ()=> playBtn.click());
-  navigator.mediaSession.setActionHandler('pause', ()=> playBtn.click());
-  navigator.mediaSession.setActionHandler('nexttrack', ()=> nextStationBtn.click());
-}
-
-/* ============ NAV: highlight the section you jump to ============ */
-const navHighlightTargets = {
-  '#radio': document.querySelector('.console'),
-  '#rptw': document.getElementById('rptw'),
-  '#crowntv': document.getElementById('crowntv')
-};
-document.querySelectorAll('nav a[href^="#"]').forEach((link)=>{
-  link.addEventListener('click', ()=>{
-    const target = navHighlightTargets[link.getAttribute('href')];
-    if(!target) return;
-    target.classList.remove('flash-highlight');
-    void target.offsetWidth;
-    target.classList.add('flash-highlight');
-    setTimeout(()=> target.classList.remove('flash-highlight'), 1800);
-  });
-});
-
-/* ============ Autoplay on load ============ */
-function attemptAutoplay(){
-  loadStation(currentStation);
-
-  if(!getSetting(SETTING_AUTOPLAY, true)){
-    statusLabel.textContent = 'TAP ▶ TO LISTEN';
-    statusLabel.classList.remove('on');
-    statusLabel.classList.add('off');
-    return;
-  }
-
-  audio.src = stationsList()[currentStation].stream;
-  setStatus('connecting');
-
-  const previouslyUnlocked = localStorage.getItem('radio-sound-unlocked') === 'true';
-  audio.muted = !previouslyUnlocked;
-
-  const playPromise = audio.play();
-  if(playPromise !== undefined){
-    playPromise.then(()=>{
-      userStarted = true;
-      initAudioPipeline(); // Connect pipeline if autoplay succeeds
-      if(audio.muted){
-        unmuteBanner.style.display = 'block';
-      }
-    }).catch(()=>{
-      audio.muted = true;
-      audio.play().then(()=>{
-        userStarted = true;
-        initAudioPipeline();
-        unmuteBanner.style.display = 'block';
-      }).catch(()=>{
-        userStarted = false;
-        statusLabel.textContent = 'TAP ▶ TO LISTEN';
-        statusLabel.classList.remove('on');
-        statusLabel.classList.add('off');
-      });
-    });
-  }
-}
-attemptAutoplay();
-
-unmuteBanner.addEventListener('click', unlockSound);
-
-/* ============ THEME TOGGLE: day / night ============ */
-const root = document.documentElement;
-const themeToggle = document.getElementById('themeToggle');
-
-function applyTheme(theme){
-  if(theme === 'light'){
-    root.setAttribute('data-theme', 'light');
-    themeToggle.textContent = '☀';
-  } else {
-    root.removeAttribute('data-theme');
-    themeToggle.textContent = '🌙';
-  }
-}
-
-const savedTheme = localStorage.getItem('site-theme') || 'dark';
-applyTheme(savedTheme);
-
-themeToggle.addEventListener('click', ()=>{
-  const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-  const next = current === 'light' ? 'dark' : 'light';
-  applyTheme(next);
-  localStorage.setItem('site-theme', next);
-});
-
-/* ============ YOUTUBE API: Control and Sync Player State ============ */
-let ytPlayers = {};
-
-// Instantiated automatically by the loaded YouTube script
-window.onYouTubeIframeAPIReady = function() {
-  initYouTubePlayer('rptwFrame');
-  initYouTubePlayer('crownFrame');
-};
-
-function initYouTubePlayer(iframeId) {
-  const frame = document.getElementById(iframeId);
-  if (!frame) return;
-  
-  ytPlayers[iframeId] = new YT.Player(iframeId, {
-    events: {
-      'onStateChange': (event) => onPlayerStateChange(event, iframeId)
-    }
-  });
-}
-
-function onPlayerStateChange(event, iframeId) {
-  // If a video starts playing (YT.PlayerState.PLAYING is 1)
-  if (event.data === YT.PlayerState.PLAYING) {
-    // Pause other YT players
-    Object.keys(ytPlayers).forEach((id) => {
-      if (id !== iframeId && ytPlayers[id] && typeof ytPlayers[id].pauseVideo === 'function') {
-        ytPlayers[id].pauseVideo();
-      }
-    });
-
-    // Pause the live Radio Stream
-    if (userStarted && !audio.paused) {
-      userPaused = true;
-      audio.pause();
-      setStatus('paused');
-    }
-  }
-}
-
-function pauseAllYouTubeVideos() {
-  Object.keys(ytPlayers).forEach((id) => {
-    if (ytPlayers[id] && typeof ytPlayers[id].pauseVideo === 'function') {
-      try {
-        ytPlayers[id].pauseVideo();
-      } catch (e) {}
-    }
-  });
-}
-
-/* ============ YOUTUBE: built-in channels, live-or-latest via backend ============ */
-let lastVideoId = { rptw: null, crown: null };
-
-async function refreshChannel(channelKey, frameEl, badgeEl){
-  try{
-    const res = await fetch(`${API_BASE}/api/channel-status?channel=${channelKey}`);
-    const data = await res.json();
-    applyChannelStatus(data, frameEl, badgeEl, channelKey, lastVideoId);
-  }catch(e){
-    console.log(`[${channelKey}] fetch failed:`, e.message);
-    badgeEl.textContent = 'Status unavailable';
-    badgeEl.classList.remove('live');
-  }
-}
-
-function applyChannelStatus(data, frameEl, badgeEl, cacheKey, cacheObj){
-  if(data.note){
-    console.log(`[${cacheKey}] diagnostic:`, data.note);
-    badgeEl.title = data.note;
-  } else {
-    badgeEl.removeAttribute('title');
-  }
-
-  if(data.videoId && data.videoId !== cacheObj[cacheKey]){
-    frameEl.src = `https://www.youtube.com/embed/${data.videoId}?autoplay=0&rel=0&controls=1&enablejsapi=1`;
-    cacheObj[cacheKey] = data.videoId;
-    // Re-initialize player connection after iframe resets source
-    setTimeout(() => initYouTubePlayer(frameEl.id), 1000);
-  }
-
-  if(data.live){
-    badgeEl.innerHTML = '<span class="live-dot"></span>LIVE NOW';
-    badgeEl.classList.add('live');
-  } else if(data.videoId){
-    badgeEl.textContent = 'Latest video';
-    badgeEl.classList.remove('live');
-  } else {
-    badgeEl.textContent = 'NOT LIVE NOW';
-    badgeEl.classList.remove('live');
-  }
-}
-
-refreshChannel('rptw',  document.getElementById('rptwFrame'),  document.getElementById('rptwBadge'));
-refreshChannel('crown', document.getElementById('crownFrame'), document.getElementById('crownBadge'));
-
-setInterval(()=>{
-  refreshChannel('rptw',  document.getElementById('rptwFrame'),  document.getElementById('rptwBadge'));
-  refreshChannel('crown', document.getElementById('crownFrame'), document.getElementById('crownBadge'));
-  myChannels.forEach(refreshCustomChannel);
-}, 60 * 1000);
-
-/* ============ MY CHANNELS: visitor-added, managed from Settings, personal to this browser ============ */
-const MY_CHANNELS_KEY = 'my-channels';
-let myChannels = [];
-try{ myChannels = JSON.parse(localStorage.getItem(MY_CHANNELS_KEY) || '[]'); }
-catch(e){ myChannels = []; }
-
-const channelsGrid = document.getElementById('channelsGrid');
-const myChannelsList = document.getElementById('myChannelsList');
-const addChannelInput = document.getElementById('addChannelInput');
-const addChannelSubmit = document.getElementById('addChannelSubmit');
-const addChannelError = document.getElementById('addChannelError');
-
-function saveMyChannels(){
-  localStorage.setItem(MY_CHANNELS_KEY, JSON.stringify(myChannels));
-}
-
-function renderMyChannelsList(){
-  myChannelsList.innerHTML = '';
-  if(myChannels.length === 0){
-    myChannelsList.innerHTML = '<div class="mini-empty">No channels added yet.</div>';
-    return;
-  }
-  myChannels.forEach((channel)=>{
-    const row = document.createElement('div');
-    row.className = 'mini-list-item';
-    const label = document.createElement('span');
-    label.textContent = channel.title;
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'mini-remove-btn';
-    removeBtn.textContent = 'Remove';
-    removeBtn.addEventListener('click', ()=>{
-      myChannels = myChannels.filter(c => c.channelId !== channel.channelId);
-      saveMyChannels();
-      const card = document.getElementById(`custom-${channel.channelId}`);
-      if(card) card.remove();
-      if(ytPlayers[`customFrame-${channel.channelId}`]) {
-        delete ytPlayers[`customFrame-${channel.channelId}`];
-      }
-      renderMyChannelsList();
-    });
-    row.appendChild(label);
-    row.appendChild(removeBtn);
-    myChannelsList.appendChild(row);
-  });
-}
-
-function buildCustomChannelCard(channel){
-  const card = document.createElement('div');
-  card.className = 'channel-card';
-  card.id = `custom-${channel.channelId}`;
-
-  const frameWrap = document.createElement('div');
-  frameWrap.className = 'frame-wrap';
-  const iframe = document.createElement('iframe');
-  iframe.id = `customFrame-${channel.channelId}`;
-  iframe.title = channel.title;
-  iframe.allowFullscreen = true;
-  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-  iframe.src = `https://www.youtube.com/embed/videoseries?list=UU${channel.channelId.slice(2)}&enablejsapi=1`;
-  frameWrap.appendChild(iframe);
-
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  const metaText = document.createElement('div');
-  const h3 = document.createElement('h3');
-  h3.textContent = channel.title;
-  const desc = document.createElement('p');
-  desc.className = 'desc';
-  desc.textContent = 'Added by you — only visible in your browser.';
-  metaText.appendChild(h3);
-  metaText.appendChild(desc);
-  const badge = document.createElement('span');
-  badge.className = 'badge';
-  badge.id = `badge-${channel.channelId}`;
-  badge.textContent = 'Checking…';
-  meta.appendChild(metaText);
-  meta.appendChild(badge);
-
-  const links = document.createElement('div');
-  links.className = 'channel-links';
-  const liveLink = document.createElement('a');
-  liveLink.href = `https://www.youtube.com/channel/${channel.channelId}/live`;
-  liveLink.target = '_blank';
-  liveLink.rel = 'noopener';
-  liveLink.textContent = 'Watch live on YouTube ↗';
-  links.appendChild(liveLink);
-
-  card.appendChild(frameWrap);
-  card.appendChild(meta);
-  card.appendChild(links);
-  
-  // Register YouTube player hooks
-  setTimeout(() => initYouTubePlayer(`customFrame-${channel.channelId}`), 1000);
-
-  return card;
-}
-
-let customLastVideoId = {};
-
-async function refreshCustomChannel(channel){
-  const frameEl = document.querySelector(`#custom-${channel.channelId} iframe`);
-  const badgeEl = document.getElementById(`badge-${channel.channelId}`);
-  if(!frameEl || !badgeEl) return;
-  try{
-    const handleParam = channel.handle ? `&handle=${encodeURIComponent(channel.handle)}` : '';
-    const res = await fetch(`${API_BASE}/api/channel-status-custom?channelId=${channel.channelId}${handleParam}`);
-    const data = await res.json();
-    applyChannelStatus(data, frameEl, badgeEl, channel.channelId, customLastVideoId);
-  }catch(e){
-    badgeEl.textContent = 'Status unavailable';
-    badgeEl.classList.remove('live');
-  }
-}
-
-function renderMyChannels(){
-  myChannels.forEach((channel)=>{
-    const card = buildCustomChannelCard(channel);
-    channelsGrid.appendChild(card);
-    refreshCustomChannel(channel);
-  });
-  renderMyChannelsList();
-}
-renderMyChannels();
-
-addChannelSubmit.addEventListener('click', async ()=>{
-  const input = addChannelInput.value.trim();
-  addChannelError.textContent = '';
-  if(!input){
-    addChannelError.textContent = 'Please enter a channel handle or URL.';
-    return;
-  }
-  addChannelSubmit.disabled = true;
-  addChannelSubmit.textContent = 'Adding…';
-  try{
-    const res = await fetch(`${API_BASE}/api/resolve-channel?input=${encodeURIComponent(input)}`);
-    const data = await res.json();
-    if(data.error || !data.channelId){
-      addChannelError.textContent = "Couldn't find that channel — check the handle or URL and try again.";
-      return;
-    }
-    if(myChannels.some(c => c.channelId === data.channelId)){
-      addChannelError.textContent = "You've already added that channel.";
-      return;
-    }
-    const channel = { channelId: data.channelId, title: data.title || input, handle: data.handle || null };
-    myChannels.push(channel);
-    saveMyChannels();
-    const card = buildCustomChannelCard(channel);
-    channelsGrid.appendChild(card);
-    refreshCustomChannel(channel);
-    renderMyChannelsList();
-    addChannelInput.value = '';
-  }catch(e){
-    addChannelError.textContent = 'Something went wrong reaching the server — try again shortly.';
-  }finally{
-    addChannelSubmit.disabled = false;
-    addChannelSubmit.textContent = '+ Add channel';
-  }
-});
-
-/* ============ MY RADIO STATIONS: visitor-added, managed from Settings, personal to this browser ============ */
-const myStationsList = document.getElementById('myStationsList');
-const addStationName = document.getElementById('addStationName');
-const addStationUrl = document.getElementById('addStationUrl');
-const addStationSubmit = document.getElementById('addStationSubmit');
-const addStationError = document.getElementById('addStationError');
-
-function renderMyStationsList(){
-  const personal = getPersonalStations();
-  myStationsList.innerHTML = '';
-  if(personal.length === 0){
-    myStationsList.innerHTML = '<div class="mini-empty">No personal stations added yet.</div>';
-    return;
-  }
-  personal.forEach((station, idx)=>{
-    const row = document.createElement('div');
-    row.className = 'mini-list-item';
-    const label = document.createElement('span');
-    label.textContent = station.name;
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'mini-remove-btn';
-    removeBtn.textContent = 'Remove';
-    removeBtn.addEventListener('click', ()=>{
-      const updated = getPersonalStations().filter((_, i) => i !== idx);
-      savePersonalStations(updated);
-      renderMyStationsList();
-      // If the removed station was currently playing, fall back to station 0.
-      if(currentStation >= stationsList().length){
-        currentStation = 0;
-      }
-    });
-    row.appendChild(label);
-    row.appendChild(removeBtn);
-    myStationsList.appendChild(row);
-  });
-}
-renderMyStationsList();
-
-addStationSubmit.addEventListener('click', ()=>{
-  const name = addStationName.value.trim();
-  const url = addStationUrl.value.trim();
-  addStationError.textContent = '';
-  if(!name || !url){
-    addStationError.textContent = 'Please fill in both a name and a stream URL.';
-    return;
-  }
-  try{ new URL(url); }
-  catch(e){
-    addStationError.textContent = 'That doesn\'t look like a valid URL.';
-    return;
-  }
-  const personal = getPersonalStations();
-  personal.push({ name, slogan: 'Added by you', frequency: 'Personal stream', stream: url });
-  savePersonalStations(personal);
-  renderMyStationsList();
-  addStationName.value = '';
-  addStationUrl.value = '';
-});
-
-/* ============ PWA: register service worker ============ */
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch(()=>{ /* non-fatal — site still works normally */ });
-  });
-}
+// Initial Setup Calls
+loadStation(0);
+updateChannelStatuses();
+setInterval(updateChannelStatuses, 120000); // Check status every 2 mins
 </script>
 
 </body>
