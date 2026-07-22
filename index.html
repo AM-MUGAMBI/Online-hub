@@ -955,12 +955,14 @@ function togglePlay() {
     userStarted = true;
     userPaused = false;
     systemBlocked = false;
+    setStatus('reconnecting'); // Show connecting state immediately
     audio.play().then(() => {
-      setStatus('playing');
       unmuteBanner.style.display = 'none';
+      // Let the 'playing' audio event handle setting the LIVE status once audio actually flows
     }).catch(err => {
       console.log("Playback blocked, showing unmute banner:", err);
       unmuteBanner.style.display = 'block';
+      setStatus('paused');
     });
   } else {
     userPaused = true;
@@ -980,12 +982,17 @@ nextStationBtn.addEventListener('click', () => {
   currentStation = (currentStation + 1) % list.length;
   loadStation(currentStation);
   if (userStarted) {
-    audio.play().then(() => setStatus('playing')).catch(() => {});
+    setStatus('reconnecting'); // Instantly show connecting when switching stations
+    audio.play().catch(() => {
+      setStatus('paused');
+    });
   }
 });
 
 // Audio event hooks
-audio.addEventListener('play', () => setStatus('playing'));
+audio.addEventListener('playing', () => setStatus('playing')); // Only shows LIVE when sound is active
+audio.addEventListener('waiting', () => setStatus('reconnecting')); // Shows reconnecting if buffering
+audio.addEventListener('stalled', () => setStatus('reconnecting')); // Shows reconnecting if stream drops
 audio.addEventListener('pause', () => {
   // If user paused it explicitly or the system forced it due to an external app (like YouTube), 
   // honor it and do NOT trigger a focus fight loop.
@@ -1005,7 +1012,6 @@ audio.addEventListener('pause', () => {
     setStatus('paused');
   }
 });
-
 // Volume control
 const savedVol = localStorage.getItem('radio-volume');
 if (savedVol !== null && getSetting(SETTING_REMEMBER_VOLUME, true)) {
